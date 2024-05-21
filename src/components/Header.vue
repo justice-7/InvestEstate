@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import SignUpModal from './SignUpModal.vue';
-import LoginModal from './LoginModal.vue';
+import SignUpModal from './Modal/SignUpModal.vue';
+import LoginModal from './Modal/LoginModal.vue';
 
 const showSignUpModal = ref(false);
 const showLoginModal = ref(false);
@@ -30,8 +30,11 @@ const logout = () => {
     <router-link to="/" class="logo">logo</router-link>
     <div class="header-links">
       <template v-if="isLoggedIn">
-        <router-link to="/mypage" class="login-link">
-          <span class="user-icon">👤</span>마이페이지
+        <router-link to="/usrMypage" class="login-link">
+          <span class="user-icon">👤</span>usr마이페이지
+        </router-link>
+        <router-link to="/reaMypage" class="login-link">
+          <span class="user-icon">👤</span>rea마이페이지
         </router-link>
         <button class="user-link" @click.prevent="logout">
           로그아웃
@@ -60,6 +63,11 @@ const logout = () => {
   border-bottom: 1px solid #ddd;
   background-color: #fff;
   font-family: Arial, sans-serif;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  box-sizing: border-box;
 }
 
 .logo {

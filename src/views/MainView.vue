@@ -1,12 +1,14 @@
 <script setup>
-import SidebarComponent from '@/components/Sidebar.vue';
+import BasicSidebar from '@/components/SideBar/BasicSidebar.vue';
 import MapComponent from '@/components/Map.vue';
+import DetailSidebar from '@/components/SideBar/DetailSidebar.vue';
 </script>
 
 <template>
   <div id="app">
     <div class="main-content">
-      <SidebarComponent />
+      <!-- <BasicSidebar /> -->
+      <DetailSidebar/>
       <MapComponent />
     </div>
   </div>

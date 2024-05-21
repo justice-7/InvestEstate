@@ -1,18 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import MainView from '@/views/MainView.vue';
 import UsrMyPage from '@/views/UsrMypageView.vue';
+import ReaMyPage from '@/views/ReaMypageView.vue';
+import AllItemView from '@/views/AllItemView.vue';
 
 const routes = [
   {
     path: '/',
-    name: 'MainView',
+    name: 'mainView',
     component: MainView
   },
   {
-    path: '/mypage',
-    name: 'UsrMyPage',
+    path: '/usrMypage',
+    name: 'usrMyPage',
     component: UsrMyPage
-  }
+  },
+  {
+    path: '/reaMypage',
+    name: 'reaMyPage',
+    component: ReaMyPage
+  },
+  {
+    path: '/allItem/:items',
+    name: 'allItem',
+    component: AllItemView,
+    props: route => ({ items: route.params.items })
+  },
 ];
 
 const router = createRouter({

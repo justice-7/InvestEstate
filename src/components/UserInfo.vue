@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import UpdateInfoModal from './UpdateInfoModal.vue';
+import UpdateInfoModal from '@/components/Modal/UpdateInfoModal.vue';
 
 const showModal = ref(false);
 

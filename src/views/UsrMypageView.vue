@@ -1,5 +1,5 @@
 <script setup>
-  import UpdateInfo from "@/components/UpdateInfo.vue";
+  import UserInfo from "@/components/UserInfo.vue";
   import KeywordSection from "@/components/Keyword.vue";
   import LikeItemsSection from "@/components/LikeItem.vue";
   import InquiryListSection from "@/components/UsrList.vue";
@@ -8,7 +8,7 @@
 <template>
   <div>
     <div class="main-content">
-      <UpdateInfo />
+      <UserInfo />
       <KeywordSection />
       <LikeItemsSection />
       <InquiryListSection />
