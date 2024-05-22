@@ -1,12 +1,13 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import axios from 'axios';
 
 const showChat = ref(false);
 const messages = ref([
-  { text: 'Hello! I am your online consultant. How can I help you?', type: 'support', time: '10:10' }
+  { text: '안녕하세요! 투자 도우미입니다. 무엇을 도와드릴까요?', type: 'support', time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
 ]);
 const newMessage = ref('');
+const isLoading = ref(false);
 
 const toggleChat = () => {
   showChat.value = !showChat.value;
@@ -19,6 +20,10 @@ const sendMessage = async () => {
     messages.value.push(userMessage);
     const content = newMessage.value.trim();
     newMessage.value = '';
+    isLoading.value = true;
+
+    await nextTick();
+    scrollToBottom();
 
     try {
       const asst_id = import.meta.env.VITE_CHATBOT_ASSISTANT_ID; // 실제 asst_id를 입력하세요
@@ -32,7 +37,7 @@ const sendMessage = async () => {
           "OpenAI-Beta": "assistants=v1"
         },
       });
-      console.log("asstData", asst.data); // 어시스턴트 데이터 확인
+      //console.log("asstData", asst.data); // 어시스턴트 데이터 확인
 
       // 스레드 생성
       const thread = await axios.post(`https://api.openai.com/v1/threads`, {}, {
@@ -43,8 +48,7 @@ const sendMessage = async () => {
         },
       });
       const thread_id = thread.data.id;
-      console.log("threadData", thread.data); // 스레드 데이터 확인
-      console.log(thread_id); // thread id 확인
+      //console.log("threadData", thread.data); // 스레드 데이터 확인
 
       // 스레드에 메시지 추가
       const message = await axios.post(`https://api.openai.com/v1/threads/${thread_id}/messages`, {
@@ -57,7 +61,7 @@ const sendMessage = async () => {
           "OpenAI-Beta": "assistants=v1"
         },
       });
-      console.log("messageData", message.data); // 메시지 데이터 확인
+      //console.log("messageData", message.data); // 메시지 데이터 확인
 
       // 어시스턴트 실행
       const run = await axios.post(`https://api.openai.com/v1/threads/${thread_id}/runs`, {
@@ -70,8 +74,7 @@ const sendMessage = async () => {
         },
       });
       const run_id = run.data.id;
-      console.log("runData", run.data); // 실행 데이터 확인
-      console.log(run_id); // run id 확인
+      //console.log("runData", run.data); // 실행 데이터 확인
 
       // 실행 상태 확인
       let statesData;
@@ -99,7 +102,7 @@ const sendMessage = async () => {
         },
       });
       console.log("responseData", response.data); // 응답 데이터 확인
-      console.log("response[0]",response.data.data[0]);
+      //console.log("response[0]",response.data.data[0]);
       // 응답 데이터 추출 (response.data의 첫번쨰)
       const firstMessage = response.data.data[0];
       if (firstMessage && firstMessage.content && firstMessage.content.length > 0) {
@@ -109,10 +112,22 @@ const sendMessage = async () => {
           type: 'support',
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
+
+        await nextTick();
+        scrollToBottom();
       }
     } catch (error) {
       console.error("Error during the API call:", error);
+    } finally {
+      isLoading.value = false;
     }
+  }
+};
+
+const scrollToBottom = () => {
+  const chatContent = document.querySelector('.chat-content');
+  if (chatContent) {
+    chatContent.scrollTop = chatContent.scrollHeight;
   }
 };
 
@@ -139,6 +154,14 @@ onMounted(() => {
             <div class="message-content">
               <p>{{ message.text }}</p>
               <span class="time">{{ message.time }}</span>
+            </div>
+          </div>
+          <div v-if="isLoading" class="chat-message support">
+            <div class="avatar">
+              <img src="/public/ChatBotIcon.png" alt="Avatar" />
+            </div>
+            <div class="message-content loader">
+              <img src="/public/ChatLoad.gif" alt="Loading..." />
             </div>
           </div>
         </div>
@@ -265,6 +288,11 @@ onMounted(() => {
     border-bottom-left-radius: 0;
   }
   
+  .loader img {
+    width: 50px; /* 원하는 크기로 조절 */
+    height: 50px; /* 원하는 크기로 조절 */
+  }
+  
   .time {
     display: block;
     margin-top: 5px;
@@ -295,7 +323,6 @@ onMounted(() => {
     margin-left: 10px;
     cursor: pointer;
   }
-  
   .send-button:hover {
     background-color: #0056b3;
   }
