@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from '@/axios'; // axios 인스턴스 가져오기
+import axios from '../axios'; // axios 인스턴스 가져오기
 import RegistItemModal from '@/components/Modal/RegistItemModal.vue';
 
 const items = ref([]);
@@ -36,7 +36,9 @@ const addItem = (newItem) => {
     id: items.value.length + 1,
     name: newItem.address,
     description: newItem.content,
-    date: new Date().toISOString().split('T')[0],
+    year: new Date().getFullYear(),
+    month: (new Date().getMonth() + 1).toString().padStart(2, '0'),
+    day: new Date().getDate().toString().padStart(2, '0'),
     status: '판매중',
     imageUrls: newItem.imageUrls, // 업로드된 이미지 URL 배열 사용
     liked: false
@@ -85,7 +87,7 @@ onMounted(() => {
           <h3>{{ item.name }}</h3>
           <p>{{ item.description }}</p>
           <div class="item-footer">
-            <span class="date">{{ item.date }}</span>
+            <span class="date">{{ item.year }}-{{ item.month }}-{{ item.day }}</span>
             <button class="view-button" @click="viewDetails(item.aptDealId)">상세보기</button>
           </div>
         </div>

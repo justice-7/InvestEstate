@@ -14,7 +14,7 @@ const toggleStatus = async (index) => {
 
 const fetchInquiries = async () => {
   try {
-    const response = await axios.get('/api/inquiries/realtor/apt-deals', {
+    const response = await axios.get('/api/inquiries/realtor', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }

@@ -1,15 +1,66 @@
+<template>
+  <div class="search-container">
+    <div class="search-bar">
+      <button class="filter-button" @click="toggleFilters">⚙️</button>
+      <input v-model="searchText" type="text" placeholder="검색어를 입력하세요" />
+      <button class="search-button" @click="searchAptDeals">🔍</button>
+    </div>
+
+    <div v-if="showFilters" class="filters">
+      <!-- 필터 섹션 생략 -->
+    </div>
+
+    <div v-if="selectedDeal" class="selected-deal">
+      <button @click="selectedDeal = null">🔙 목록으로 돌아가기</button>
+      <h3>{{ selectedDeal.name }}</h3>
+      <p>가격: {{ selectedDeal.price }}원</p>
+      <p>주소: {{ selectedDeal.jibun }}</p>
+      <p>면적: {{ selectedDeal.area }}</p>
+      <p>층: {{ selectedDeal.floor }}</p>
+      <button @click="addFavorite(selectedDeal.aptDealId)">매물 찜</button>
+      <div class="inquiry">
+        <textarea v-model="inquiryMessage" placeholder="문의 내용을 입력하세요"></textarea>
+        <button @click="createInquiry">매물 문의</button>
+      </div>
+
+      <div v-if="relatedDeals.length" class="related-deals">
+        <h3>관련 매물 목록</h3>
+        <AptDealGraph :deals="relatedDeals" />
+        <ul>
+          <li v-for="deal in relatedDeals" :key="deal.aptDealId" class="result-item">
+            <span class="result-name">{{ deal.name }}</span>
+            <span class="result-price">{{ deal.price }}원</span>
+            <span class="result-date">{{ formatDate(deal.year, deal.month, deal.day) }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div v-else-if="searchResults.length" class="search-results">
+      <h3>검색 결과</h3>
+      <ul>
+        <li v-for="deal in searchResults" :key="deal.aptDealId" class="result-item" @click="selectDeal(deal)">
+          <span class="result-name">{{ deal.name }}</span>
+          <span class="result-price">{{ deal.price }}원</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { ref } from 'vue';
-import axios from '../../axios'; // axios 인스턴스를 가져옵니다.
+import axios from '../../axios';
+import AptDealGraph from './AptDealGraph.vue';
 
 const showFilters = ref(false);
 const selectedArea = ref(null);
 const selectedType = ref([]);
 const searchText = ref("");
 const searchResults = ref([]);
-const selectedDeal = ref(null); // 선택된 거래 상세 정보를 저장하는 변수
-const relatedDeals = ref([]); // 선택된 거래와 관련된 모든 매물 정보를 저장하는 변수
-const inquiryMessage = ref(""); // 문의 메시지를 저장하는 변수
+const selectedDeal = ref(null);
+const relatedDeals = ref([]);
+const inquiryMessage = ref("");
 
 function toggleFilters() {
   showFilters.value = !showFilters.value;
@@ -40,10 +91,9 @@ async function searchAptDeals() {
     const response = await axios.get('/api/apt-deal/search', {
       params: {
         searchText: searchText.value,
-        // 필요한 경우 priceMin, priceMax, area 등의 추가 필터링 파라미터를 여기에 추가
       },
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}` // 인증 헤더 추가
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
     });
     searchResults.value = response.data;
@@ -57,7 +107,7 @@ async function fetchRelatedDeals(aptId) {
   try {
     const response = await axios.get(`/api/apt-deal/related/${aptId}`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}` // 인증 헤더 추가
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
     });
     relatedDeals.value = response.data;
@@ -80,7 +130,7 @@ async function addFavorite(aptDealId) {
   try {
     await axios.post(`/api/favorites/${aptDealId}`, {}, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}` // 인증 헤더 추가
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
     });
     alert("매물 찜이 완료되었습니다.");
@@ -98,7 +148,7 @@ async function createInquiry() {
     };
     await axios.post('/api/inquiries', inquiryRequest, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}` // 인증 헤더 추가
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
     });
     alert("문의가 성공적으로 전송되었습니다.");
@@ -109,89 +159,6 @@ async function createInquiry() {
   }
 }
 </script>
-
-<template>
-  <div class="search-container">
-    <div class="search-bar">
-      <button class="filter-button" @click="toggleFilters">⚙️</button>
-      <input v-model="searchText" type="text" placeholder="검색어를 입력하세요" />
-      <button class="search-button" @click="searchAptDeals">🔍</button>
-    </div>
-
-    <div v-if="showFilters" class="filters">
-      <div class="filter-option">
-        <label>금액</label>
-        <input type="range" min="10" max="500" />
-        <div class="filter-values">
-          <span>10$</span>
-          <span>500$</span>
-        </div>
-      </div>
-      <div class="filter-option">
-        <label>면적</label>
-        <div class="buttons">
-          <button
-            v-for="area in ['10평 이하', '10평대', '20평대', '30평대', '40평대', '50평 이상']"
-            :key="area"
-            :class="{ active: selectedArea === area }"
-            @click="selectArea(area)"
-          >{{ area }}</button>
-        </div>
-      </div>
-      <div class="filter-option">
-        <label>유형</label>
-        <div class="buttons">
-          <button
-            v-for="type in ['아파트', '오피스텔', '빌라', '원룸', '투룸+', '상가']"
-            :key="type"
-            :class="{ active: selectedType.includes(type) }"
-            @click="toggleType(type)"
-          >{{ type }}</button>
-        </div>
-      </div>
-      <div class="filter-actions">
-        <button class="reset-button" @click="resetFilters">초기화</button>
-        <button class="apply-button" @click="searchAptDeals">적용하기</button>
-      </div>
-    </div>
-
-    <div v-if="selectedDeal" class="selected-deal">
-      <button @click="selectedDeal = null">🔙 목록으로 돌아가기</button>
-      <h3>{{ selectedDeal.name }}</h3>
-      <p>가격: {{ selectedDeal.price }}원</p>
-      <p>주소: {{ selectedDeal.jibun }}</p>
-      <p>면적: {{ selectedDeal.area }}</p>
-      <p>층: {{ selectedDeal.floor }}</p>
-      <!-- 더 많은 상세 정보들 -->
-      <button @click="addFavorite(selectedDeal.aptDealId)">매물 찜</button>
-      <div class="inquiry">
-        <textarea v-model="inquiryMessage" placeholder="문의 내용을 입력하세요"></textarea>
-        <button @click="createInquiry">매물 문의</button>
-      </div>
-
-      <div v-if="relatedDeals.length" class="related-deals">
-        <h3>관련 매물 목록</h3>
-        <ul>
-          <li v-for="deal in relatedDeals" :key="deal.aptDealId" class="result-item">
-            <span class="result-name">{{ deal.name }}</span>
-            <span class="result-price">{{ deal.price }}원</span>
-            <span class="result-date">{{ formatDate(deal.year, deal.month, deal.day) }}</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div v-else-if="searchResults.length" class="search-results">
-      <h3>검색 결과</h3>
-      <ul>
-        <li v-for="deal in searchResults" :key="deal.aptDealId" class="result-item" @click="selectDeal(deal)">
-          <span class="result-name">{{ deal.name }}</span>
-          <span class="result-price">{{ deal.price }}원</span>
-        </li>
-      </ul>
-    </div>
-  </div>
-</template>
 
 <style scoped>
 .search-container {
