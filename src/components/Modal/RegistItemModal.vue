@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, onMounted } from 'vue';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
@@ -29,6 +29,11 @@ const editorOptions = ref({
   },
 });
 
+const mapContainer = ref(null);
+let map = null;
+let geocoder = null;
+let marker = null;
+
 const handleFileUpload = (event) => {
   const files = event.target.files;
   if (files) {
@@ -49,6 +54,15 @@ const submitForm = () => {
 const closeModal = () => {
   emit('close');
 };
+
+const openAddressPopup = () => {
+  const popup = window.open('/address-search-popup', '주소 검색', 'width=600,height=400');
+  window.addEventListener('message', (event) => {
+    if (event.origin === window.location.origin && event.data.address) {
+      form.value.address = event.data.address;
+    }
+  });
+};
 </script>
 
 <template>
@@ -58,7 +72,8 @@ const closeModal = () => {
       <form @submit.prevent="submitForm">
         <div class="form-group">
           <label for="address">주소</label>
-          <input type="text" id="address" v-model="form.address" required />
+          <input type="text" id="address" @click="openAddressPopup" v-model="form.address" placeholder="주소" readonly="true">
+          <div ref="mapContainer" style="width:300px;height:300px;margin-top:10px;display:none"></div>
         </div>
 
         <div class="form-group">
@@ -128,6 +143,8 @@ const closeModal = () => {
   border-radius: 8px;
   max-width: 600px;
   width: 100%;
+  max-height: 90vh; /* Adjust the max height */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .form-group {

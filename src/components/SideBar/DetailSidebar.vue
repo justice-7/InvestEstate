@@ -6,6 +6,7 @@ const showFilters = ref(false);
 const showRoadview = ref(false);
 const selectedArea = ref(null);
 const selectedType = ref([]);
+const isFavorite = ref(false);
 
 function toggleFilters() {
   showFilters.value = !showFilters.value;
@@ -28,30 +29,30 @@ function resetFilters() {
   selectedArea.value = null;
   selectedType.value = [];
 }
+
+function toggleFavorite() {
+  isFavorite.value = !isFavorite.value;
+}
 </script>
 
 <template>
   <div class="detail-sidebar">
+    <div class="apartment-header">
+      <h2>민서 아파트</h2>
+      <div class="action-buttons">
+        <button class="favorite-button" @click="toggleFavorite">
+          <span v-if="isFavorite">❤️</span>
+          <span v-else>🤍</span>
+        </button>
+        <button class="inquiry-button">문의</button>
+      </div>
+    </div>
     <div class="search-bar">
-      <input type="text" placeholder="경기 과천시 갈현동 과천대로 8길 68" />
       <button class="filter-button" @click="toggleFilters">⚙️</button>
+      <input type="text" placeholder="경기 과천시 갈현동 과천대로 8길 68" />
+      <button class="search-button">🔍</button>
     </div>
-    <div class="basic-info">
-      <p>주소: 경기 과천시 갈현동 과천대로8길 68</p>
-      <p>준공날짜: 2023년 6월 건축</p>
-      <p>세대수: 총 472세대</p>
-      <p>동수: 총 8개동</p>
-      <div class="statistics">
-        <div>관심상지수 <span>224명</span></div>
-        <div>검색 단지순위 <span>23위</span></div>
-        <div>최근 6개월간 매물수 <span>23회</span></div>
-      </div>
-      <div class="buttons">
-        <button @click="showRoadview = !showRoadview">로드뷰</button>
-        <button>항공뷰</button>
-        <button>네이버평면도</button>
-      </div>
-    </div>
+
     <div v-if="showFilters" class="filters">
       <div class="filter-option">
         <label>금액</label>
@@ -88,6 +89,24 @@ function resetFilters() {
         <button class="apply-button">적용하기</button>
       </div>
     </div>
+
+    <div class="basic-info">
+      <p>주소: 경기 과천시 갈현동 과천대로8길 68</p>
+      <p>준공날짜: 2023년 6월 건축</p>
+      <p>세대수: 총 472세대</p>
+      <p>동수: 총 8개동</p>
+      <div class="statistics">
+        <div>관심상지수 <span>224명</span></div>
+        <div>검색 단지순위 <span>23위</span></div>
+        <div>최근 6개월간 매물수 <span>23회</span></div>
+      </div>
+      <div class="buttons">
+        <button @click="showRoadview = !showRoadview">로드뷰</button>
+        <button>항공뷰</button>
+        <button>네이버평면도</button>
+      </div>
+    </div>
+    
     <div class="price-trend">
       <h3>매매/전세 가격변동</h3>
       <!-- 여기에 차트 컴포넌트가 들어갈 수 있습니다 -->
@@ -110,23 +129,69 @@ function resetFilters() {
   width: 300px;
 }
 
+.apartment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.apartment-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.favorite-button,
+.inquiry-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.favorite-button span {
+  font-size: 20px;
+}
+
+.inquiry-button {
+  background-color: #007bff;
+  color: white;
+}
+
 .search-bar {
   display: flex;
   align-items: center;
   padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  margin-bottom: 10px;
 }
 
 .search-bar input {
   flex: 1;
   border: none;
   outline: none;
-  padding: 5px;
+  padding: 5px 10px;
+  border-radius: 20px;
 }
 
-.filter-button {
+.search-bar button {
   background: none;
   border: none;
   cursor: pointer;
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+.filter-button {
+  margin-right: 5px;
 }
 
 .basic-info {

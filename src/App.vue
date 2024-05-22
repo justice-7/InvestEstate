@@ -1,10 +1,15 @@
 <script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import Header from './components/Header.vue';
+
+const route = useRoute();
+const showHeader = computed(() => route.name !== 'addressSearchPopup');
 </script>
 
 <template>
   <div id="app">
-    <Header/>
+    <Header v-if="showHeader" />
     <main class="main-content">
       <router-view />
     </main>

@@ -3,6 +3,7 @@ import MainView from '@/views/MainView.vue';
 import UsrMyPage from '@/views/UsrMypageView.vue';
 import ReaMyPage from '@/views/ReaMypageView.vue';
 import AllItemView from '@/views/AllItemView.vue';
+import AddressSearchPopup from '@/views/AddrPopup.vue'; // Ensure this path is correct
 
 const routes = [
   {
@@ -26,6 +27,11 @@ const routes = [
     component: AllItemView,
     props: route => ({ items: route.params.items })
   },
+  {
+    path: '/address-search-popup',
+    name: 'addressSearchPopup',
+    component: AddressSearchPopup
+  }
 ];
 
 const router = createRouter({
