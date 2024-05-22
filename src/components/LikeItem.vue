@@ -1,94 +1,67 @@
 <script setup>
-defineProps({
-  item: Object
-});
+import { ref, onMounted } from 'vue';
+import axios from '../axios'; // axios 인스턴스를 가져옵니다.
+import FavoriteItem from './FavoriteItem.vue';
+
+const favoriteItems = ref([]);
+
+async function fetchFavoriteItems() {
+  try {
+    const response = await axios.get('/api/favorites', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    favoriteItems.value = response.data;
+    console.log(response.data);
+  } catch (error) {
+    console.error("There was an error fetching the favorite items!", error);
+  }
+}
+
+async function removeFavoriteItem(aptDealId) {
+  try {
+    await axios.delete(`/api/favorites/${aptDealId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    favoriteItems.value = favoriteItems.value.filter(item => item.aptDealId !== aptDealId);
+  } catch (error) {
+    console.error("There was an error removing the favorite item!", error);
+  }
+}
+
+onMounted(fetchFavoriteItems);
 </script>
 
-
-<!-- item 넘겨 주기 -->
 <template>
-  <div class="favorite-item">
-    <!-- <div class="item-image">
-      <img :src="item.image" alt="item image" />
+  <div class="favorites-section">
+    <h2>찜한 매물</h2>
+    <div class="favorite-items">
+      <FavoriteItem
+        v-for="item in favoriteItems"
+        :key="item.aptDealId"
+        :item="item"
+        @remove="removeFavoriteItem"
+      />
     </div>
-    <div class="item-details">
-      <div class="item-tags">
-        <span class="tag" v-for="tag in item.tags" :key="tag">{{ tag }}</span>
-      </div>
-      <h3>{{ item.name }}</h3>
-      <p>{{ item.description }}</p>
-      <div class="item-footer">
-        <span class="date">{{ item.date }}</span>
-        <button class="remove-button" @click="$emit('remove')">삭제</button>
-        <button class="view-button">상세보기</button>
-      </div>
-    </div> -->
   </div>
 </template>
 
 <style scoped>
-.favorite-item {
-  width: 200px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 15px;
-  background-color: #fff;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+.favorites-section {
+  margin-bottom: 20px;
 }
 
-.item-image img {
-  width: 100%;
-  border-radius: 5px;
+.favorites-section h2 {
+  font-size: 18px;
   margin-bottom: 10px;
 }
 
-.item-details {
+.favorite-items {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.item-tags {
-  margin-bottom: 5px;
-}
-
-.tag {
-  background-color: #00bcd4;
-  color: #fff;
-  padding: 2px 5px;
-  border-radius: 5px;
-  font-size: 12px;
-}
-
-.item-footer {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.date {
-  font-size: 12px;
-  color: #888;
-}
-
-.remove-button {
-  background: none;
-  border: none;
-  color: red;
-  cursor: pointer;
-  font-size: 12px;
-  margin-right: 10px;
-}
-
-.view-button {
-  padding: 5px 10px;
-  border: 1px solid #00bcd4;
-  background-color: #fff;
-  color: #00bcd4;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 12px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 </style>
