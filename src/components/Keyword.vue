@@ -3,7 +3,24 @@ import { ref } from 'vue';
 import axios from 'axios';
 
 const newKeyword = ref("");
-const keywords = ref(["강민서", "좋은 아파트", "정보 보기"]);
+const keywords = ref([]);
+
+// 키워드를 서버로부터 가져오는 함수
+async function fetchKeywords() {
+  try {
+    const response = await axios.get('http://localhost:8080/api/users/keywords', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    keywords.value = response.data;
+  } catch (error) {
+    console.error("There was an error fetching the keywords!", error);
+  }
+}
+
+// 컴포넌트가 마운트될 때 키워드를 가져옴
+fetchKeywords();
 
 function addKeyword() {
   if (newKeyword.value && keywords.value.length < 10) {
@@ -17,9 +34,9 @@ function addKeyword() {
 
 async function saveKeywordToDatabase(keyword) {
   try {
-    await axios.post('http://localhost:8080/keywords/add', keyword, {
+    await axios.put('http://localhost:8080/api/users/keywords', { keyword }, {
       headers: {
-        'Content-Type': 'text/plain'
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
     });
   } catch (error) {
@@ -28,7 +45,22 @@ async function saveKeywordToDatabase(keyword) {
 }
 
 function removeKeyword(index) {
+  const keyword = keywords.value[index];
   keywords.value.splice(index, 1);
+  deleteKeywordFromDatabase(keyword);
+}
+
+async function deleteKeywordFromDatabase(keyword) {
+  try {
+    await axios.delete('http://localhost:8080/api/users/keywords', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      },
+      data: { keyword }
+    });
+  } catch (error) {
+    console.error("There was an error deleting the keyword!", error);
+  }
 }
 </script>
 

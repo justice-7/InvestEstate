@@ -1,7 +1,10 @@
 <script setup>
 import { ref } from 'vue';
+import { defineEmits } from 'vue';
 
-const activeTab = ref('general'); // default tab is general
+const emits = defineEmits(['close', 'signup', 'realtor-signup']);
+
+const activeTab = ref('general');
 
 const form = ref({
   email: '',
@@ -18,7 +21,26 @@ const handleTabChange = (tab) => {
 };
 
 const submitForm = () => {
-  console.log('Form submitted:', form.value);
+  if (activeTab.value === 'general') {
+    emits('signup', {
+      email: form.value.email,
+      password: form.value.password,
+      name: form.value.name,
+      phonenumber: form.value.phone,
+      role: 'USER'
+    });
+  } else if (activeTab.value === 'agent') {
+    emits('realtor-signup', {
+      email: form.value.email,
+      password: form.value.password,
+      name: form.value.name,
+      phonenumber: form.value.phone,
+      role: 'REA',
+      realEstateName: form.value.realEstateName,
+      registrationNumber: form.value.licenseNumber,
+      location: form.value.realEstateLocation
+    });
+  }
 };
 </script>
 

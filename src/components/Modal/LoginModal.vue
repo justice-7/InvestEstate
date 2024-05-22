@@ -10,10 +10,7 @@ const form = ref({
 });
 
 const handleSubmit = () => {
-  console.log('Login data:', form.value);
-  // Handle login logic here
   emits('login', form.value);
-  emits('close');
 };
 
 const closeModal = () => {

@@ -1,18 +1,29 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from '../axios'; // 기본 설정된 Axios 인스턴스를 가져옵니다.
 
-const inquiries = ref([
-  {
-    name: "Full Name",
-    email: "email@example.com",
-    apartment: "민서 아파트",
-    date: "2024.05.14 / 13:03:34",
-    phone: "010-1234-5678",
-    confirmed: true
+const inquiries = ref([]);
+
+// 컴포넌트가 마운트될 때 문의 목록을 가져옴
+onMounted(async () => {
+  await fetchInquiries();
+});
+
+async function fetchInquiries() {
+  try {
+    const response = await axios.get('/api/inquiries/user', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    inquiries.value = response.data;
+  } catch (error) {
+    console.error("There was an error fetching the inquiries!", error);
   }
-]);
+}
 
 function deleteInquiry(index) {
+  // 여기에서는 실제 삭제 기능은 구현하지 않고, 목록에서만 제거합니다.
   inquiries.value.splice(index, 1);
 }
 </script>
@@ -40,7 +51,7 @@ function deleteInquiry(index) {
           <td>{{ inquiry.date }}</td>
           <td>{{ inquiry.phone }}</td>
           <td>
-            <input type="checkbox" v-model="inquiry.confirmed" />
+            <input type="checkbox" v-model="inquiry.confirmed" disabled />
           </td>
           <td>
             <button class="delete-button" @click="deleteInquiry(index)">취소</button>
