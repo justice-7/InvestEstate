@@ -46,6 +46,7 @@ async function searchAptDeals() {
       }
     });
     searchResults.value = response.data;
+    console.log(response.data);
   } catch (error) {
     console.error("There was an error searching the apartment deals!", error);
   }

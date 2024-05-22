@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import Header from './components/Header.vue';
+import FloatingChat from './components/FloatingChat.vue';
 
 const route = useRoute();
 const showHeader = computed(() => route.name !== 'addressSearchPopup');
@@ -13,6 +14,7 @@ const showHeader = computed(() => route.name !== 'addressSearchPopup');
     <main class="main-content">
       <router-view />
     </main>
+    <FloatingChat />
   </div>
 </template>
 
