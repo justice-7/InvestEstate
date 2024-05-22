@@ -8,6 +8,7 @@ const selectedType = ref([]);
 const searchText = ref("");
 const searchResults = ref([]);
 const selectedDeal = ref(null); // 선택된 거래 상세 정보를 저장하는 변수
+const relatedDeals = ref([]); // 선택된 거래와 관련된 모든 매물 정보를 저장하는 변수
 const inquiryMessage = ref(""); // 문의 메시지를 저장하는 변수
 
 function toggleFilters() {
@@ -36,7 +37,7 @@ function resetFilters() {
 
 async function searchAptDeals() {
   try {
-    const response = await axios.get('/api/apt-deal', {
+    const response = await axios.get('/api/apt-deal/search', {
       params: {
         searchText: searchText.value,
         // 필요한 경우 priceMin, priceMax, area 등의 추가 필터링 파라미터를 여기에 추가
@@ -52,8 +53,27 @@ async function searchAptDeals() {
   }
 }
 
+async function fetchRelatedDeals(aptId) {
+  try {
+    const response = await axios.get(`/api/apt-deal/related/${aptId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}` // 인증 헤더 추가
+      }
+    });
+    relatedDeals.value = response.data;
+    console.log(response.data);
+  } catch (error) {
+    console.error("There was an error fetching related deals!", error);
+  }
+}
+
 function selectDeal(deal) {
   selectedDeal.value = deal;
+  fetchRelatedDeals(deal.aptId);
+}
+
+function formatDate(year, month, day) {
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
 async function addFavorite(aptDealId) {
@@ -139,7 +159,7 @@ async function createInquiry() {
       <button @click="selectedDeal = null">🔙 목록으로 돌아가기</button>
       <h3>{{ selectedDeal.name }}</h3>
       <p>가격: {{ selectedDeal.price }}원</p>
-      <p>주소: {{ selectedDeal.dongName }}</p>
+      <p>주소: {{ selectedDeal.jibun }}</p>
       <p>면적: {{ selectedDeal.area }}</p>
       <p>층: {{ selectedDeal.floor }}</p>
       <!-- 더 많은 상세 정보들 -->
@@ -147,6 +167,17 @@ async function createInquiry() {
       <div class="inquiry">
         <textarea v-model="inquiryMessage" placeholder="문의 내용을 입력하세요"></textarea>
         <button @click="createInquiry">매물 문의</button>
+      </div>
+
+      <div v-if="relatedDeals.length" class="related-deals">
+        <h3>관련 매물 목록</h3>
+        <ul>
+          <li v-for="deal in relatedDeals" :key="deal.aptDealId" class="result-item">
+            <span class="result-name">{{ deal.name }}</span>
+            <span class="result-price">{{ deal.price }}원</span>
+            <span class="result-date">{{ formatDate(deal.year, deal.month, deal.day) }}</span>
+          </li>
+        </ul>
       </div>
     </div>
 
@@ -161,7 +192,6 @@ async function createInquiry() {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .search-container {
@@ -346,5 +376,47 @@ async function createInquiry() {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.related-deals {
+  margin-top: 20px;
+}
+
+.related-deals h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.related-deals ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.related-deals .result-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.related-deals .result-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.related-deals .result-price {
+  font-size: 14px;
+  color: #888;
+}
+
+.related-deals .result-date {
+  font-size: 12px;
+  color: #aaa;
 }
 </style>
