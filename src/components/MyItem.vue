@@ -1,74 +1,35 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from '@/axios'; // axios 인스턴스 가져오기
 import RegistItemModal from '@/components/Modal/RegistItemModal.vue';
 
-const items = ref([
-  {
-    id: 1,
-    name: "OO 아파트",
-    description: "서울 특별시 역삼동 테헤란로",
-    date: "2024.05.10",
-    status: "판매중",
-    imageUrls: ["path/to/image1.jpg"],
-    liked: false
-  },
-  {
-    id: 2,
-    name: "OO 아파트",
-    description: "서울 특별시 역삼동 테헤란로",
-    date: "2024.05.10",
-    status: "판매중",
-    imageUrls: ["path/to/image2.jpg"],
-    liked: false
-  },
-  {
-    id: 3,
-    name: "OO 아파트",
-    description: "서울 특별시 역삼동 테헤란로",
-    date: "2024.05.10",
-    status: "판매중",
-    imageUrls: ["path/to/image3.jpg"],
-    liked: false
-  },
-  {
-    id: 4,
-    name: "OO 아파트",
-    description: "서울 특별시 역삼동 테헤란로",
-    date: "2024.05.10",
-    status: "판매중",
-    imageUrls: ["path/to/image4.jpg"],
-    liked: false
-  },
-  {
-    id: 5,
-    name: "OO 아파트",
-    description: "서울 특별시 역삼동 테헤란로",
-    date: "2024.05.10",
-    status: "판매중",
-    imageUrls: ["path/to/image5.jpg"],
-    liked: false
-  }
-]);
-
+const items = ref([]);
 const showModal = ref(false);
+const displayedItems = ref([]);
+const router = useRouter();
 
 const toggleModal = () => {
   showModal.value = !showModal.value;
 };
 
-const deleteItem = (index) => {
-  items.value.splice(index, 1);
+const deleteItem = async (itemId) => {
+  try {
+    await axios.delete(`/api/apt-deal/${itemId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}` // 인증 헤더 추가
+      }
+    });
+    items.value = items.value.filter(item => item.aptDealId !== itemId);
+    displayedItems.value = items.value.slice(0, 4); // 첫 4개 아이템만 반환
+  } catch (error) {
+    console.error("There was an error deleting the item!", error);
+  }
 };
 
-const viewDetails = () => {
-  router.push('/'); // 메인화면(지도를 보여주되 해당 매물 정보 보여주기
+const viewDetails = (itemId) => {
+  router.push(`/item-details/${itemId}`);
 };
-
-// 첫 4개 아이템만 반환
-const displayedItems = computed(() => {
-  return items.value.slice(0, 4);
-});
 
 const addItem = (newItem) => {
   items.value.push({
@@ -80,8 +41,27 @@ const addItem = (newItem) => {
     imageUrls: newItem.imageUrls, // 업로드된 이미지 URL 배열 사용
     liked: false
   });
+  displayedItems.value = items.value.slice(0, 4); // 첫 4개 아이템만 반환
   toggleModal(); // 아이템을 추가한 후 모달 닫기
 };
+
+const fetchItems = async () => {
+  try {
+    const response = await axios.get('/api/apt-deal/by-realtor', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}` // 인증 헤더 추가
+      }
+    });
+    items.value = response.data;
+    displayedItems.value = items.value.slice(0, 4); // 첫 4개 아이템만 반환
+  } catch (error) {
+    console.error("There was an error fetching the items!", error);
+  }
+};
+
+onMounted(() => {
+  fetchItems();
+});
 </script>
 
 <template>
@@ -94,19 +74,19 @@ const addItem = (newItem) => {
       </router-link>
     </div>
     <div class="items-container">
-      <div v-for="(item, index) in displayedItems" :key="item.id" class="item-card">
+      <div v-for="(item, index) in displayedItems" :key="item.aptDealId" class="item-card">
         <!-- 대표 사진만 보여줌 -->
-        <img :src="item.imageUrls[0]" alt="item image" class="item-image" v-if="item.imageUrls.length" />
+        <img v-if="item.imageUrls && item.imageUrls.length" :src="item.imageUrls[0]" alt="item image" class="item-image" />
         <div class="item-details">
           <div class="item-tags">
             <span class="tag">{{ item.status }}</span>
-            <button class="delete-button" @click="deleteItem(index)">삭제</button>
+            <button class="delete-button" @click="deleteItem(item.aptDealId)">삭제</button>
           </div>
           <h3>{{ item.name }}</h3>
           <p>{{ item.description }}</p>
           <div class="item-footer">
             <span class="date">{{ item.date }}</span>
-            <button class="view-button" @click="viewDetails">상세보기</button>
+            <button class="view-button" @click="viewDetails(item.aptDealId)">상세보기</button>
           </div>
         </div>
       </div>

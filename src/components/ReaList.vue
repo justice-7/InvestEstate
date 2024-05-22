@@ -1,34 +1,33 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from '../axios'; // axios 인스턴스를 가져옵니다.
 
-const inquiries = ref([
-  {
-    id: 1,
-    listing: "민서 아파트",
-    info: {
-      name: "일반 사용자 이름",
-      email: "email@example.com"
-    },
-    date: "2024.05.14 / 13:03:34",
-    phone: "010-1234-5678",
-    status: false
-  },
-  {
-    id: 2,
-    listing: "민서 아파트",
-    info: {
-      name: "일반 사용자 이름",
-      email: "email@example.com"
-    },
-    date: "2024.05.14 / 13:03:34",
-    phone: "010-1234-5678",
-    status: false
-  }
-]);
+const inquiries = ref([]);
 
-const toggleStatus = (index) => {
+const toggleStatus = async (index) => {
   inquiries.value[index].status = !inquiries.value[index].status;
+  // 상태 변경을 서버에 반영
+  await axios.put(`/api/inquiries/${inquiries.value[index].id}`, {
+    status: inquiries.value[index].status
+  });
 };
+
+const fetchInquiries = async () => {
+  try {
+    const response = await axios.get('/api/inquiries/realtor/apt-deals', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    inquiries.value = response.data;
+  } catch (error) {
+    console.error("Error fetching inquiries", error);
+  }
+};
+
+onMounted(() => {
+  fetchInquiries();
+});
 </script>
 
 <template>
