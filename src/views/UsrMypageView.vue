@@ -24,6 +24,7 @@ import InquiryListSection from "@/components/UsrList.vue";
 
 <style scoped>
 .my-page {
+  margin-top:20px;
   padding: 20px;
   background-color: #f9f9f9;
   min-height: 100vh;

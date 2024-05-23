@@ -120,7 +120,7 @@ h2 {
   font-size: 14px;
   cursor: pointer;
   border: none;
-  background-color: #007bff;
+  background-color: #4B6EC4; /* 색상 변경 */
   color: white;
   border-radius: 5px;
 }
@@ -130,7 +130,7 @@ h2 {
   font-size: 14px;
   cursor: pointer;
   border: none;
-  background-color: #007bff;
+  background-color: #4B6EC4; /* 색상 변경 */
   color: white;
   border-radius: 5px;
 }
@@ -200,11 +200,12 @@ h2 {
 
 .view-button {
   padding: 5px 10px;
-  border: 1px solid #00bcd4;
+  border: 1px solid #4B6EC4; /* 색상 변경 */
   background-color: #fff;
-  color: #00bcd4;
+  color: #4B6EC4; /* 색상 변경 */
   border-radius: 5px;
   cursor: pointer;
   font-size: 12px;
 }
 </style>
+

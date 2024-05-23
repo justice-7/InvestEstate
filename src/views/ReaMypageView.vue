@@ -20,6 +20,7 @@ import UserInfo from '@/components/UserInfo.vue';
 
 <style scoped>
 .container {
+  margin-top: 20px;
   padding: 20px;
 }
 

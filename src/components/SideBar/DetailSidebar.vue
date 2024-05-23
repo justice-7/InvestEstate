@@ -177,13 +177,13 @@ async function createInquiry() {
       <input v-model="searchText" type="text" placeholder="검색어를 입력하세요" />
       <button class="search-button" @click="searchAptDeals">🔍</button>
     </div>
-
+    
     <div v-if="showFilters" class="filters">
       <div class="filter-option">
         <label>금액</label>
-        <input type="range" min="10" max="1000" />
+        <input type="range" min="1000" max="500000" />
         <div class="filter-values">
-          <span>1000만원</span>
+          <span>1,000만원</span>
           <span>500,000만원</span>
         </div>
       </div>
@@ -223,10 +223,12 @@ async function createInquiry() {
           {{ isFavorite ? '❤️' : '🤍' }}
         </button>
       </div>
-      <p>건축년도: {{ selectedDeal.builtYear }}</p>
-      <p>동 이름: {{ selectedDeal.dongName }}</p>
-      <p>지번: {{ selectedDeal.jibun }}</p>
-      <p>이름: {{ selectedDeal.name }}</p>
+      <div class="deal-info">
+        <span><span class="label">건축년도:</span> <span class="value">{{ selectedDeal.builtYear }}</span></span>
+        <span><span class="label">동 이름:</span> <span class="value">{{ selectedDeal.dongName }}</span></span>
+        <span><span class="label">지번:</span> <span class="value">{{ selectedDeal.jibun }}</span></span>
+        <span><span class="label">이름:</span> <span class="value">{{ selectedDeal.name }}</span></span>
+      </div>
 
       <!-- Roadview Component -->
       <Roadview v-if="selectedDeal.lat && selectedDeal.lng" :lat="selectedDeal.lat" :lng="selectedDeal.lng" />
@@ -262,9 +264,11 @@ async function createInquiry() {
 
 <style scoped>
 .search-container {
+  margin-top: 15px;
   padding: 20px;
   font-family: 'Roboto', sans-serif;
   background-color: #f7f9fc;
+  border-radius: 20px;
 }
 
 .search-bar {
@@ -300,12 +304,11 @@ async function createInquiry() {
 }
 
 .filters {
-  margin-top: 20px;
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  border-radius: 20px;
+  border: 1px solid #ccc; /* 테두리 추가 */
 }
 
 .filter-option {
@@ -316,58 +319,80 @@ async function createInquiry() {
   display: block;
   margin-bottom: 10px;
   font-weight: bold;
-  color: #333;
+}
+
+.filter-option input[type="range"] {
+  width: 100%;
+  margin-bottom: 10px;
+  -webkit-appearance: none; /* Safari와 Chrome에서 기본 스타일 제거 */
+  appearance: none; /* 기타 브라우저에서 기본 스타일 제거 */
+  background: #ddd; /* 기본 배경 색상 */
+  height: 5px;
+  border-radius: 5px;
+  outline: none;
+}
+
+.filter-option input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #4B6EC4; /* 이미지 색상 */
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.filter-option input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #4B6EC4; /* 이미지 색상 */
+  cursor: pointer;
+  border-radius: 50%;
 }
 
 .filter-values {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
 }
 
 .buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
 }
 
 .buttons button {
-  flex: 1 1 calc(33.333% - 10px);
-  padding: 10px;
-  background: #007bff;
-  color: #fff;
-  border: 1px solid #007bff;
-  border-radius: 5px;
+  margin: 5px;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  background-color: #fff;
   cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.buttons button:hover {
-  background-color: #0056b3;
+  border-radius: 20px;
 }
 
 .buttons button.active {
-  background-color: #0056b3;
+  background-color: #4B6EC4; /* 이미지 색상 */
+  color: #fff;
+  border-color: #4B6EC4; /* 이미지 색상 */
 }
 
 .filter-actions {
   display: flex;
   justify-content: space-between;
+  gap: 10px; /* 버튼 사이의 간격 조정 */
 }
 
-.reset-button,
-.apply-button {
-  padding: 10px;
+.reset-button, .apply-button {
+  padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  background-color: #4B6EC4; /* 이미지 색상 */
+  color: #fff;
   cursor: pointer;
-  flex: 1;
-  margin: 10px;
+  border-radius: 20px;
+  flex-grow: 1; /* 버튼을 동일한 비율로 확장 */
 }
 
 .reset-button {
   background-color: #6c757d;
-  color: #fff;
 }
 
 .reset-button:hover {
@@ -375,12 +400,11 @@ async function createInquiry() {
 }
 
 .apply-button {
-  background-color: #007bff;
-  color: #fff;
+  background-color: #4B6EC4; /* 이미지 색상 */
 }
 
 .apply-button:hover {
-  background-color: #0056b3;
+  background-color: #405a9c; /* 조금 더 어두운 이미지 색상 */
 }
 
 .search-results {
@@ -402,24 +426,31 @@ async function createInquiry() {
 
 .result-item {
   padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  border: 1px solid #4B6EC4; /* 테두리 색상 변경 */
+  border-radius: 20px;
   background-color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .result-item:hover {
   background-color: #f1f1f1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result-item .item-details {
+  display: flex;
+  flex-direction: column;
 }
 
 .result-name {
   font-size: 18px;
   font-weight: bold;
   color: #333;
+  margin-bottom: 5px;
 }
 
 .result-price {
@@ -429,32 +460,66 @@ async function createInquiry() {
 
 .selected-deal {
   margin-top: 30px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
 }
 
 .selected-deal .deal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.selected-deal h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
 }
 
 .selected-deal button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 18px;
-  padding: 10px 15px;
-  color: #007bff;
-  transition: color 0.3s;
+  font-size: 16px;
+  padding: 8px 12px;
+  color: #4B6EC4;
+  transition: color 0.3s, background-color 0.3s;
+  border-radius: 20px;
 }
 
 .selected-deal button:hover {
-  color: #0056b3;
+  background-color: #4B6EC4;
+  color: #fff;
 }
 
-.selected-deal h3 {
-  font-size: 24px;
-  margin-bottom: 20px;
+.selected-deal .deal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.selected-deal .deal-info span {
+  font-size: 16px;
+  color: #555;
+}
+
+.selected-deal .deal-info span.label {
+  font-weight: 700;
   color: #333;
+  margin-right: 10px;
+}
+
+.selected-deal .deal-info span.value {
+  font-weight: 400;
+  color: #555;
 }
 
 .inquiry {
@@ -466,24 +531,24 @@ async function createInquiry() {
   height: 120px;
   padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 20px;
   margin-bottom: 20px;
   font-size: 16px;
 }
 
 .inquiry button {
   padding: 12px 20px;
-  background-color: #007bff;
+  background-color: #4B6EC4; /* 이미지 색상 */
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
 }
 
 .inquiry button:hover {
-  background-color: #0056b3;
+  background-color: #405a9c; /* 조금 더 어두운 이미지 색상 */
 }
 
 .related-deals {
@@ -506,7 +571,7 @@ async function createInquiry() {
 .related-deals .result-item {
   padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #fff;
   display: flex;
   justify-content: space-between;

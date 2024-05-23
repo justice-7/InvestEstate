@@ -34,8 +34,8 @@ onMounted(fetchUserInfo);
     <h3>나의 정보</h3>
     <div class="user-info">
       <div class="info">
-        <div class="name">{{ userInfo.name }}</div>
-        <div class="email">{{ userInfo.email }}</div>
+        <div class="name">{{userInfo.name}}</div>
+        <div class="email">{{userInfo.email}}</div>
       </div>
       <button class="update-button" @click.prevent="toggleModal">개인정보 수정</button>
     </div>
@@ -71,6 +71,7 @@ h3 {
   padding: 20px;
   border-radius: 8px;
   background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .info {
@@ -82,7 +83,7 @@ h3 {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 5px;
-  color: #007bff;
+  color: #4B6EC4;
 }
 
 .email {
@@ -93,16 +94,22 @@ h3 {
 .update-button {
   padding: 10px 20px;
   border: none;
-  background-color: #007bff;
+  background-color: #4B6EC4;
   color: #fff;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .update-button:hover {
-  background-color: #0056b3;
+  background-color: #3a54a1;
   transform: scale(1.05);
+}
+
+.update-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(75, 110, 196, 0.3);
 }
 </style>

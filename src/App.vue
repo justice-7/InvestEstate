@@ -6,6 +6,7 @@ import FloatingChat from './components/FloatingChat.vue';
 
 const route = useRoute();
 const showHeader = computed(() => route.name !== 'addressSearchPopup');
+const showFloatingChat = computed(() => route.name !== 'addressSearchPopup');
 </script>
 
 <template>
@@ -14,7 +15,7 @@ const showHeader = computed(() => route.name !== 'addressSearchPopup');
     <main class="main-content">
       <router-view />
     </main>
-    <FloatingChat />
+    <FloatingChat v-if="showFloatingChat" />
   </div>
 </template>
 

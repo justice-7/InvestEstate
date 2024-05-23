@@ -65,38 +65,78 @@ function deleteInquiry(index) {
 
 <style scoped>
 .inquiry-list {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
-  font-size: 18px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .inquiry-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .inquiry-table th,
 .inquiry-table td {
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
   text-align: left;
+  border-right: 1px solid #ddd; /* Add right border for column separation */
+}
+
+.inquiry-table th {
+  background-color: #4B6EC4;
+  color: #fff;
+  font-weight: 600;
+}
+
+.inquiry-table td {
+  color: #555;
+}
+
+.inquiry-table tr:last-child td {
+  border-bottom: none;
+}
+
+.inquiry-table th:last-child,
+.inquiry-table td:last-child {
+  border-right: none; /* Remove right border for the last column */
 }
 
 .delete-button {
-  background-color: #6200ea;
+  background-color: #ff4d4f;
   color: #fff;
   border: none;
-  padding: 5px 10px;
+  padding: 8px 12px;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .delete-button:hover {
-  background-color: #3700b3;
+  background-color: #d9363e;
+}
+
+.delete-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.3);
+}
+
+.inquiry-table input[type="checkbox"] {
+  cursor: default;
 }
 </style>

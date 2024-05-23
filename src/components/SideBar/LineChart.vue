@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { defineProps, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, Filler, LineController, TimeScale } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 

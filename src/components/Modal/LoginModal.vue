@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { defineEmits } from 'vue';
 
 const emits = defineEmits(['close', 'login']);
 
@@ -54,17 +53,18 @@ const closeModal = () => {
 
 .modal-content {
   background: #fff;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 30px;
+  border-radius: 15px;
   width: 90%;
   max-width: 400px;
   position: relative;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   background: none;
   border: none;
   font-size: 20px;
@@ -73,38 +73,45 @@ const closeModal = () => {
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  font-size: 24px;
+  color: #333;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
 }
 
 .form-group input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   box-sizing: border-box;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-size: 16px;
 }
 
 .submit-button {
   width: 100%;
-  padding: 10px;
-  background-color: #007bff;
+  padding: 12px;
+  background-color: #4B6EC4; /* 변경된 색상 */
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .submit-button:hover {
-  background-color: #0056b3;
+  background-color: #405a9c; /* 변경된 색상 */
+  transform: scale(1.05);
 }
 </style>

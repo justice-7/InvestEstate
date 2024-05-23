@@ -1,43 +1,14 @@
-<template>
-  <div class="modal-overlay" @click.self="closeModal">
-    <div class="modal-content">
-      <button class="close-button" @click="closeModal">X</button>
-      <h2>개인정보 수정</h2>
-      <form @submit.prevent="submitForm">
-        <div>
-          <label>닉네임</label>
-          <input type="text" v-model="form.nickname" placeholder="닉네임" required />
-        </div>
-        <div>
-          <label>이메일</label>
-          <input type="email" v-model="form.email" placeholder="john.doe@gmail.com" required />
-        </div>
-        <div>
-          <label>전화번호</label>
-          <input type="text" v-model="form.phone" placeholder="+62XX-XXXX-XXXX" required />
-        </div>
-        <div>
-          <label>비밀번호</label>
-          <input type="password" v-model="form.password" placeholder="●●●●●●●●" required />
-        </div>
-        <button type="submit" :disabled="!isFormValid">수정하기</button>
-      </form>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, watch } from 'vue';
-import { defineEmits } from 'vue';
 import axios from 'axios'; // axios 인스턴스를 가져옵니다.
 
 const emits = defineEmits(['close']);
 
 const form = ref({
-  nickname: '',
-  email: '',
-  phone: '',
-  password: ''
+  nickname: '박싸피',
+  email: 'wjddml0702@naver.com',
+  phone: '010-1234-1234',
+  password: '●●●●'
 });
 
 const isFormValid = ref(false);
@@ -72,6 +43,34 @@ function validateForm() {
 // Watch for changes in the form and validate
 watch(form, validateForm, { deep: true });
 </script>
+
+<template>
+  <div class="modal-overlay" @click.self="closeModal">
+    <div class="modal-content">
+      <button class="close-button" @click="closeModal">X</button>
+      <h2>개인정보 수정</h2>
+      <form @submit.prevent="submitForm">
+        <div>
+          <label>닉네임</label>
+          <input type="text" v-model="form.nickname" required />
+        </div>
+        <div>
+          <label>이메일</label>
+          <input type="email" v-model="form.email" required />
+        </div>
+        <div>
+          <label>전화번호</label>
+          <input type="text" v-model="form.phone" required />
+        </div>
+        <div>
+          <label>비밀번호</label>
+          <input type="password" v-model="form.password" required />
+        </div>
+        <button type="submit" :disabled="!isFormValid">수정하기</button>
+      </form>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .modal-overlay {
@@ -129,7 +128,7 @@ form input {
 }
 
 form button {
-  background-color: #007bff;
+  background-color: #4B6EC4;
   color: #fff;
   padding: 10px 20px;
   border: none;
@@ -144,6 +143,6 @@ form button:disabled {
 }
 
 form button:hover:enabled {
-  background-color: #0056b3;
+  background-color: #3a54a1;
 }
 </style>

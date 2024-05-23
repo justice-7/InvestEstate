@@ -59,7 +59,10 @@ const selectAddress = (result) => {
 <style scoped>
 .search-popup {
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .search-bar {
@@ -70,23 +73,32 @@ const selectAddress = (result) => {
 
 .search-bar input {
   flex-grow: 1;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.search-bar input:focus {
+  border-color: #4B6EC4;
 }
 
 .search-bar button {
   margin-left: 10px;
-  padding: 8px 12px;
-  background-color: #4caf50;
+  padding: 10px 16px;
+  background-color: #4B6EC4;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .search-bar button:hover {
-  background-color: #45a049;
+  background-color: #405a9c;
+  transform: scale(1.05);
 }
 
 .search-results {
@@ -101,15 +113,17 @@ const selectAddress = (result) => {
 .result-item {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 8px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
   cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .result-item:hover {
   background-color: #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .address-info {
@@ -119,21 +133,24 @@ const selectAddress = (result) => {
 .address {
   font-size: 16px;
   margin: 0;
+  font-weight: 600;
 }
 
 .extra-info {
-  font-size: 12px;
+  font-size: 14px;
   color: #888;
   margin: 0;
 }
 
 .view-links a {
   margin-left: 10px;
-  color: #4caf50;
+  color: #4B6EC4;
   text-decoration: none;
+  transition: color 0.3s;
 }
 
 .view-links a:hover {
   text-decoration: underline;
+  color: #405a9c;
 }
 </style>

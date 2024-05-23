@@ -62,36 +62,67 @@ onMounted(() => {
 <style scoped>
 .inquiry-list {
   font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1000px;
+  margin: auto;
 }
 
 h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 thead th {
-  background-color: #f5f5f5;
-  padding: 10px;
+  background-color: #4B6EC4;
+  color: #fff;
+  padding: 15px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+  border-right: 1px solid #ddd; /* 열 구분선 추가 */
+}
+
+thead th:last-child {
+  border-right: none; /* 마지막 열의 구분선 제거 */
 }
 
 tbody td {
-  padding: 10px;
+  padding: 15px;
   border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd; /* 열 구분선 추가 */
+  color: #555;
+}
+
+tbody td:last-child {
+  border-right: none; /* 마지막 열의 구분선 제거 */
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
 }
 
 tbody tr:hover {
-  background-color: #f9f9f9;
+  background-color: #f1f1f1;
 }
 
 tbody tr td input[type="checkbox"] {
   cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: #4B6EC4; /* 체크박스 색상 */
 }
 </style>

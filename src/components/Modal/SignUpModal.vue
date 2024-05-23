@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { defineEmits } from 'vue';
 
 const emits = defineEmits(['close', 'signup', 'realtor-signup']);
 
@@ -97,7 +96,7 @@ const submitForm = () => {
             <input type="text" v-model="form.licenseNumber" required />
           </div>
         </div>
-        <button type="submit" class="submit-button">Save</button>
+        <button type="submit" class="submit-button">SignUp</button>
       </form>
     </div>
   </div>
@@ -139,6 +138,7 @@ const submitForm = () => {
 h2 {
   text-align: center;
   margin-bottom: 20px;
+  color: #333;
 }
 
 .tab-buttons {
@@ -153,11 +153,13 @@ h2 {
   border: 1px solid #ddd;
   cursor: pointer;
   font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .tab-buttons button.active {
-  background-color: #007bff;
+  background-color: #4B6EC4;
   color: white;
+  border-color: #4B6EC4;
 }
 
 .form {
@@ -174,6 +176,7 @@ h2 {
 .form-group label {
   margin-bottom: 5px;
   font-size: 14px;
+  color: #333;
 }
 
 .email-group {
@@ -188,6 +191,10 @@ h2 {
 
 .email-input input {
   flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .verify-button {
@@ -196,9 +203,14 @@ h2 {
   font-size: 14px;
   cursor: pointer;
   border: none;
-  background-color: #007bff;
+  background-color: #4B6EC4;
   color: white;
   border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.verify-button:hover {
+  background-color: #3a54a1;
 }
 
 .form-group input {
@@ -211,14 +223,15 @@ h2 {
 .submit-button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #007bff;
+  background-color: #4B6EC4;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .submit-button:hover {
-  background-color: #0056b3;
+  background-color: #3a54a1;
 }
 </style>

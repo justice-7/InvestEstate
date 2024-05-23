@@ -119,7 +119,9 @@ const formatDate = (dateString) => {
 
 <template>
   <header class="header">
-    <router-link to="/" class="logo">Minseo Home</router-link>
+    <router-link to="/" class="logo">
+      <img src="/Logo2.png" alt="Minseo Home Logo"> 투자 메이트
+    </router-link>
     <div class="header-links">
       <template v-if="isLoggedIn">
         <div class="notification-icon" @click.stop="fetchNotifications">
@@ -135,10 +137,10 @@ const formatDate = (dateString) => {
           </div>
         </div>
         <router-link v-if="userRole === 'USER'" to="/usrMypage" class="login-link">
-          <i class="fas fa-user-circle user-icon"></i>USER MYPAGE
+          <i class="fas fa-user-circle user-icon"></i>MYPAGE
         </router-link>
         <router-link v-if="userRole === 'REA'" to="/reaMypage" class="login-link">
-          <i class="fas fa-user-circle user-icon"></i>REA MYPAGE
+          <i class="fas fa-user-circle user-icon"></i>MYPAGE
         </router-link>
         <button class="user-link" @click.prevent="logout">
           LOGOUT
@@ -146,10 +148,10 @@ const formatDate = (dateString) => {
       </template>
       <template v-else>
         <button class="user-link" @click.prevent="toggleLoginModal">
-          로그인
+          LOGIN
         </button>
         <button class="user-link" @click.prevent="toggleSignUpModal">
-          회원가입
+          SIGNUP
         </button>
       </template>
     </div>
@@ -182,10 +184,18 @@ const formatDate = (dateString) => {
 }
 
 .logo {
+  display: flex; /* 플렉스 컨테이너로 설정 */
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: center; /* 가로 중앙 정렬 */
   font-size: 24px;
   font-weight: bold;
   color: #343a40;
   text-decoration: none;
+}
+.logo img {
+  width: auto;
+  height: 30px;
+  margin-right: 6px; /* 텍스트와 이미지 사이의 간격 */
 }
 
 .header-links {
@@ -194,16 +204,22 @@ const formatDate = (dateString) => {
 }
 
 .user-link, .login-link, .notification-icon {
-  margin-right: 20px;
+  margin-right: 10px;
   text-decoration: none;
   color: #343a40;
   cursor: pointer;
   font-size: 16px;
   transition: color 0.3s;
+  padding: 8px 15px;
+  border: none;
+  background-color: transparent;
+  border-radius: 5px;
+  font-weight: bold; /* 글씨 두껍게 */
 }
 
 .user-link:hover, .login-link:hover, .notification-icon:hover {
-  color: #007bff;
+  color: #4B6EC4;
+  background-color: #e9ecef;
 }
 
 .user-icon {
@@ -218,11 +234,12 @@ const formatDate = (dateString) => {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .join-button:hover {
   background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .notification-icon {

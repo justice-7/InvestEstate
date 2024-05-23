@@ -33,15 +33,17 @@
           <input type="text" id="jibun" v-model="form.jibun" readonly>
         </div>
 
-        <div class="form-group">
+        <!-- 숨긴 부분 시작 -->
+        <div v-if="false" class="form-group">
           <label for="lat">위도</label>
           <input type="text" id="lat" v-model="form.lat" readonly>
         </div>
 
-        <div class="form-group">
+        <div v-if="false" class="form-group">
           <label for="lng">경도</label>
           <input type="text" id="lng" v-model="form.lng" readonly>
         </div>
+        <!-- 숨긴 부분 끝 -->
 
         <div class="form-group">
           <label for="area">평수</label>
@@ -76,7 +78,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import axios from '../../axios';
 
 const emit = defineEmits(['submit', 'close']);
@@ -175,47 +177,60 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 30px;
+  border-radius: 10px;
   max-width: 600px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-weight: bold;
+  color: #333;
 }
 
 input[type="text"],
 textarea {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  border-color: #4B6EC4;
 }
 
 .submit-button,
 .cancel-button {
   padding: 12px 20px;
-  margin: 5px;
+  margin: 10px 5px 0;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .submit-button {
-  background-color: #4caf50;
+  background-color: #4B6EC4;
   color: #fff;
 }
 
@@ -224,8 +239,9 @@ textarea {
   cursor: not-allowed;
 }
 
-.submit-button:hover {
-  background-color: #45a049;
+.submit-button:hover:enabled {
+  background-color: #405a9c;
+  transform: scale(1.05);
 }
 
 .cancel-button {
@@ -234,6 +250,7 @@ textarea {
 }
 
 .cancel-button:hover {
-  background-color: #e53935;
+  background-color: #d32f2f;
+  transform: scale(1.05);
 }
 </style>
