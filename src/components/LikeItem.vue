@@ -19,14 +19,14 @@ async function fetchFavoriteItems() {
   }
 }
 
-async function removeFavoriteItem(aptDealId) {
+async function removeFavoriteItem(aptId) {
   try {
-    await axios.delete(`/api/favorites/${aptDealId}`, {
+    await axios.delete(`/api/favorites/${aptId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
     });
-    favoriteItems.value = favoriteItems.value.filter(item => item.aptDealId !== aptDealId);
+    favoriteItems.value = favoriteItems.value.filter(item => item.aptId !== aptId);
   } catch (error) {
     console.error("There was an error removing the favorite item!", error);
   }
@@ -37,11 +37,11 @@ onMounted(fetchFavoriteItems);
 
 <template>
   <div class="favorites-section">
-    <h2>찜한 매물</h2>
+    <h2>관심 아파트</h2>
     <div class="favorite-items">
       <FavoriteItem
         v-for="item in favoriteItems"
-        :key="item.aptDealId"
+        :key="item.aptId"
         :item="item"
         @remove="removeFavoriteItem"
       />

@@ -7,13 +7,12 @@ defineProps({
 <template>
   <div class="favorite-item">
     <div class="item-image">
-      <img v-if="item && item.aptDeal && item.aptDeal.imageUrls && item.aptDeal.imageUrls.length > 0" :src="item.aptDeal.imageUrls[0]" alt="item image"/>
+      <img v-if="item && item.aptInfo && item.aptInfo.imageUrls && item.aptInfo.imageUrls.length > 0" :src="item.aptInfo.imageUrls[0]" alt="item image"/>
     </div>
     <div class="item-details">
-      <h3 v-if="item && item.aptDeal">{{ item.aptDeal.name }}</h3>
-      <p v-if="item && item.aptDeal">가격: {{ item.aptDeal.price }}원</p>
-      <div class="item-footer" v-if="item && item.aptDeal">
-        <button class="remove-button" @click="$emit('remove', item.aptDeal.aptDealId)">삭제</button>
+      <h3 v-if="item && item.aptInfo">{{ item.aptInfo.name }}</h3>
+      <div class="item-footer" v-if="item && item.aptInfo">
+        <button class="remove-button" @click="$emit('remove', item.aptId)">삭제</button>
         <button class="view-button">상세보기</button>
       </div>
     </div>

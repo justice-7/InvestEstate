@@ -74,16 +74,16 @@ async function fetchRelatedDeals(aptId) {
 function selectDeal(deal) {
   selectedDeal.value = deal;
   fetchRelatedDeals(deal.aptId);
-  checkIfFavorite(deal.aptDealId);
+  checkIfFavorite(deal.aptId);
 }
 
 function formatDate(year, month, day) {
   return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
-async function addFavorite(aptDealId) {
+async function addFavorite(aptId) {
   try {
-    await axios.post(`/api/favorites/${aptDealId}`, {}, {
+    await axios.post(`/api/favorites/${aptId}`, {}, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
@@ -96,9 +96,9 @@ async function addFavorite(aptDealId) {
   }
 }
 
-async function removeFavorite(aptDealId) {
+async function removeFavorite(aptId) {
   try {
-    await axios.delete(`/api/favorites/${aptDealId}`, {
+    await axios.delete(`/api/favorites/${aptId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
@@ -111,9 +111,9 @@ async function removeFavorite(aptDealId) {
   }
 }
 
-async function checkIfFavorite(aptDealId) {
+async function checkIfFavorite(aptId) {
   try {
-    const response = await axios.get(`/api/favorites/${aptDealId}`, {
+    const response = await axios.get(`/api/favorites/${aptId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
@@ -124,11 +124,12 @@ async function checkIfFavorite(aptDealId) {
   }
 }
 
+
 async function createInquiry() {
   try {
     const inquiryRequest = {
-      aptDealId: selectedDeal.value.aptDealId,
-      message: inquiryMessage.value
+      aptId: selectedDeal.value.aptId,
+      content: inquiryMessage.value
     };
     await axios.post('/api/inquiries', inquiryRequest, {
       headers: {
@@ -160,7 +161,7 @@ async function createInquiry() {
       <button @click="selectedDeal = null">🔙 목록으로 돌아가기</button>
       <div class="deal-header">
         <h3>{{ selectedDeal.name }}</h3>
-        <button class="favorite-button" @click="isFavorite ? removeFavorite(selectedDeal.aptDealId) : addFavorite(selectedDeal.aptDealId)">
+        <button class="favorite-button" @click="isFavorite ? removeFavorite(selectedDeal.aptId) : addFavorite(selectedDeal.aptId)">
           {{ isFavorite ? '❤️' : '🤍' }}
         </button>
       </div>
@@ -197,6 +198,7 @@ async function createInquiry() {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .search-container {
