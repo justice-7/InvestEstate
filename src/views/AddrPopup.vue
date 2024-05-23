@@ -1,3 +1,26 @@
+<script setup>
+import { ref } from 'vue';
+
+const searchQuery = ref('');
+const searchResults = ref([]);
+
+const performSearch = () => {
+  // Mock search results
+  searchResults.value = [
+    { postalCode: '06035', address: '서울 강남구 가로수길 5', extraInfo: '서울 강남구 신사동 537-5' },
+    { postalCode: '06035', address: '서울 강남구 가로수길 9', extraInfo: '서울 강남구 신사동 536-9' },
+    { postalCode: '06035', address: '서울 강남구 가로수길 11', extraInfo: '서울 강남구 신사동 535-7' }
+  ];
+};
+
+const selectAddress = (result) => {
+  searchQuery.value = `${result.address} (${result.extraInfo})`;
+  // Pass the selected address back to the opener window
+  window.opener.postMessage({ address: searchQuery.value }, '*');
+  window.close();
+};
+</script>
+
 <template>
   <div class="search-popup">
     <h2>주소 검색</h2>
@@ -26,6 +49,7 @@
   </div>
 </template>
 
+<<<<<<< HEAD
 <script setup>
 import { ref } from 'vue';
 import axios from '../axios';
@@ -55,6 +79,9 @@ const selectAddress = (result) => {
   window.close();
 };
 </script>
+=======
+
+>>>>>>> 9584ec3f1815189cef92c30547efbbcc7e5069a6
 
 <style scoped>
 .search-popup {
