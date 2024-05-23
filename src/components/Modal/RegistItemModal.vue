@@ -1,70 +1,3 @@
-<script setup>
-import { ref, defineEmits, onMounted } from 'vue';
-import { QuillEditor } from '@vueup/vue-quill';
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
-
-const emit = defineEmits(['submit', 'close']);
-
-const form = ref({
-  address: '',
-  area: '',
-  price: '',
-  floor: '',
-  year: '',
-  household: '',
-  content: '',
-  imageUrls: [] // 여러 개의 이미지 URL을 저장하기 위한 배열
-});
-
-const editorOptions = ref({
-  placeholder: '내용을 입력하세요. 사진이나 영상을 업로드할 수 있습니다.',
-  modules: {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline'],
-      ['image', 'video'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['clean'],
-    ],
-  },
-});
-
-const mapContainer = ref(null);
-let map = null;
-let geocoder = null;
-let marker = null;
-
-const handleFileUpload = (event) => {
-  const files = event.target.files;
-  if (files) {
-    for (let i = 0; i < files.length; i++) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        form.value.imageUrls.push(e.target.result);
-      };
-      reader.readAsDataURL(files[i]);
-    }
-  }
-};
-
-const submitForm = () => {
-  emit('submit', { ...form.value });
-};
-
-const closeModal = () => {
-  emit('close');
-};
-
-const openAddressPopup = () => {
-  const popup = window.open('/address-search-popup', '주소 검색', 'width=600,height=400');
-  window.addEventListener('message', (event) => {
-    if (event.origin === window.location.origin && event.data.address) {
-      form.value.address = event.data.address;
-    }
-  });
-};
-</script>
-
 <template>
   <div class="modal-overlay" @click.self="closeModal">
     <div class="modal-content">
@@ -73,7 +6,6 @@ const openAddressPopup = () => {
         <div class="form-group">
           <label for="address">주소</label>
           <input type="text" id="address" @click="openAddressPopup" v-model="form.address" placeholder="주소" readonly="true">
-          <div ref="mapContainer" style="width:300px;height:300px;margin-top:10px;display:none"></div>
         </div>
 
         <div class="form-group">
@@ -124,6 +56,68 @@ const openAddressPopup = () => {
   </div>
 </template>
 
+<script setup>
+import { ref, defineEmits } from 'vue';
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
+const emit = defineEmits(['submit', 'close']);
+
+const form = ref({
+  address: '',
+  area: '',
+  price: '',
+  floor: '',
+  year: '',
+  household: '',
+  content: '',
+  imageUrls: []
+});
+
+const editorOptions = ref({
+  placeholder: '내용을 입력하세요. 사진이나 영상을 업로드할 수 있습니다.',
+  modules: {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline'],
+      ['image', 'video'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['clean'],
+    ],
+  },
+});
+
+const handleFileUpload = (event) => {
+  const files = event.target.files;
+  if (files) {
+    for (let i = 0; i < files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        form.value.imageUrls.push(e.target.result);
+      };
+      reader.readAsDataURL(files[i]);
+    }
+  }
+};
+
+const submitForm = () => {
+  emit('submit', { ...form.value });
+};
+
+const closeModal = () => {
+  emit('close');
+};
+
+const openAddressPopup = () => {
+  const popup = window.open('/address-search-popup', '주소 검색', 'width=600,height=400');
+  window.addEventListener('message', (event) => {
+    if (event.origin === window.location.origin && event.data.address) {
+      form.value.address = event.data.address;
+    }
+  });
+};
+</script>
+
 <style scoped>
 .modal-overlay {
   position: fixed;
@@ -143,8 +137,8 @@ const openAddressPopup = () => {
   border-radius: 8px;
   max-width: 600px;
   width: 100%;
-  max-height: 90vh; /* Adjust the max height */
-  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .form-group {

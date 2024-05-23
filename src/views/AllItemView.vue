@@ -1,23 +1,37 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import axios from '../axios';
 
-const route = useRoute();
 const items = ref([]);
 
-onMounted(() => {
+const fetchItems = async () => {
   try {
-    const itemsParam = route.params.items;
-    const paramsItems = itemsParam ? JSON.parse(decodeURIComponent(itemsParam)) : [];
-    items.value = paramsItems;
+    const response = await axios.get('/api/apt-deal/by-realtor', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    items.value = response.data;
   } catch (error) {
-    console.error('Error parsing items:', error);
-    items.value = [];
+    console.error('Error fetching items:', error);
   }
+};
+
+onMounted(() => {
+  fetchItems();
 });
 
-const deleteItem = (index) => {
-  items.value.splice(index, 1);
+const deleteItem = async (itemId, index) => {
+  try {
+    await axios.delete(`/api/apt-deal/${itemId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    items.value.splice(index, 1);
+  } catch (error) {
+    console.error('Error deleting item:', error);
+  }
 };
 </script>
 
@@ -25,17 +39,17 @@ const deleteItem = (index) => {
   <div class="all-items">
     <h2>전체 매물 목록</h2>
     <div class="items-container">
-      <div v-for="(item, index) in items" :key="item.id" class="item-card">
-        <img :src="item.imageUrls[0]" alt="item image" class="item-image" />
+      <div v-for="(item, index) in items" :key="item.aptDealId" class="item-card">
+        <img v-if="item.imageUrls && item.imageUrls.length" :src="item.imageUrls[0]" alt="item image" class="item-image" />
         <div class="item-details">
           <div class="item-tags">
             <span class="tag">{{ item.status }}</span>
-            <button class="delete-button" @click="deleteItem(index)">삭제</button>
+            <button class="delete-button" @click="deleteItem(item.aptDealId, index)">삭제</button>
           </div>
           <h3>{{ item.name }}</h3>
           <p>{{ item.description }}</p>
           <div class="item-footer">
-            <span class="date">{{ item.date }}</span>
+            <span class="date">{{ item.year }}-{{ item.month }}-{{ item.day }}</span>
             <button class="view-button">상세보기</button>
           </div>
         </div>
