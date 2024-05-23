@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps } from 'vue';
+import { ref, watch, computed } from 'vue';
 import LineChart from './LineChart.vue';
 
 const props = defineProps({
@@ -15,11 +15,15 @@ const props = defineProps({
   }
 });
 
+const sortedDeals = computed(() => {
+  return props.deals.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+});
+
 const chartData = ref({
-  labels: props.deals.map(deal => new Date(deal.date)),
+  labels: sortedDeals.value.map(deal => new Date(deal.date)),
   datasets: [{
     label: 'Price',
-    data: props.deals.map(deal => parseFloat(deal.price.replace(/[^0-9.-]+/g, ""))),
+    data: sortedDeals.value.map(deal => parseFloat(deal.price.replace(/[^0-9.-]+/g, ""))),
     borderColor: 'rgb(75, 192, 192)',
     backgroundColor: 'rgba(75, 192, 192, 0.2)',
     fill: false, // 선만 보이도록 설정
@@ -68,8 +72,9 @@ const chartOptions = ref({
 });
 
 watch(() => props.deals, (newDeals) => {
-  chartData.value.labels = newDeals.map(deal => new Date(deal.date));
-  chartData.value.datasets[0].data = newDeals.map(deal => parseFloat(deal.price.replace(/[^0-9.-]+/g, "")));
+  const sortedDeals = newDeals.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+  chartData.value.labels = sortedDeals.map(deal => new Date(deal.date));
+  chartData.value.datasets[0].data = sortedDeals.map(deal => parseFloat(deal.price.replace(/[^0-9.-]+/g, "")));
 });
 </script>
 

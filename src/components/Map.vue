@@ -30,10 +30,11 @@ watch(
       lat: apt.lat,
       lng: apt.lng,
       visible: false,
-      buildYear: apt.buildYear,
+      builtYear: apt.builtYear,
       dongCode: apt.dongCode,
       dongName: apt.dongName,
       jibun: apt.jibun,
+
     }));
 
     if (markerList.value.length > 0) {

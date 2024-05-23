@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import BasicSidebar from '@/components/SideBar/BasicSidebar.vue';
 import Map from '@/components/Map.vue';
 import DetailSidebar from '@/components/SideBar/DetailSidebar.vue';
 

@@ -68,7 +68,7 @@ const submitForm = () => {
           <label>ID (Email)</label>
           <div class="email-input">
             <input type="email" v-model="form.email" required />
-            <button class="verify-button">인증</button>
+            <button class="verify-button">중복 확인</button>
           </div>
         </div>
         <div class="form-group">

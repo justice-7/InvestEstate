@@ -179,7 +179,40 @@ async function createInquiry() {
     </div>
 
     <div v-if="showFilters" class="filters">
-      <!-- 필터 섹션 생략 -->
+      <div class="filter-option">
+        <label>금액</label>
+        <input type="range" min="10" max="1000" />
+        <div class="filter-values">
+          <span>1000만원</span>
+          <span>500,000만원</span>
+        </div>
+      </div>
+      <div class="filter-option">
+        <label>면적</label>
+        <div class="buttons">
+          <button
+            v-for="area in ['10평 이하', '10평대', '20평대', '30평대', '40평대', '50평 이상']"
+            :key="area"
+            :class="{ active: selectedArea === area }"
+            @click="selectArea(area)"
+          >{{ area }}</button>
+        </div>
+      </div>
+      <div class="filter-option">
+        <label>유형</label>
+        <div class="buttons">
+          <button
+            v-for="type in ['아파트', '오피스텔', '빌라', '원룸', '투룸+', '상가']"
+            :key="type"
+            :class="{ active: selectedType.includes(type) }"
+            @click="toggleType(type)"
+          >{{ type }}</button>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button class="reset-button" @click="resetFilters">초기화</button>
+        <button class="apply-button" @click="searchAptDeals">적용하기</button>
+      </div>
     </div>
 
     <div v-if="selectedDeal" class="selected-deal">
@@ -209,7 +242,7 @@ async function createInquiry() {
         <ul>
           <li v-for="deal in relatedDeals" :key="deal.aptDealId" class="result-item">
             <span class="result-name">{{ deal.name }}</span>
-            <span class="result-price">{{ deal.price }}원</span>
+            <span class="result-price">{{ deal.price }}만원</span>
             <span class="result-date">{{ formatDate(deal.year, deal.month, deal.day) }}</span>
           </li>
         </ul>
@@ -221,7 +254,6 @@ async function createInquiry() {
       <ul>
         <li v-for="deal in searchResults" :key="deal.aptDealId" class="result-item" @click="selectDeal(deal)">
           <span class="result-name">{{ deal.name }}</span>
-          <span class="result-price">{{ deal.price }}원</span>
         </li>
       </ul>
     </div>
