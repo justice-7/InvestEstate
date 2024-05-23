@@ -1,83 +1,15 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from '../axios'; // axios 인스턴스 가져오기
-import RegistItemModal from '@/components/Modal/RegistItemModal.vue';
-
-const items = ref([]);
-const showModal = ref(false);
-const displayedItems = ref([]);
-const router = useRouter();
-
-const toggleModal = () => {
-  showModal.value = !showModal.value;
-};
-
-const deleteItem = async (itemId) => {
-  try {
-    await axios.delete(`/api/apt-deal/${itemId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}` // 인증 헤더 추가
-      }
-    });
-    items.value = items.value.filter(item => item.aptDealId !== itemId);
-    displayedItems.value = items.value.slice(0, 4); // 첫 4개 아이템만 반환
-  } catch (error) {
-    console.error("There was an error deleting the item!", error);
-  }
-};
-
-const viewDetails = (itemId) => {
-  router.push(`/item-details/${itemId}`);
-};
-
-const addItem = (newItem) => {
-  items.value.push({
-    id: items.value.length + 1,
-    name: newItem.address,
-    description: newItem.content,
-    year: new Date().getFullYear(),
-    month: (new Date().getMonth() + 1).toString().padStart(2, '0'),
-    day: new Date().getDate().toString().padStart(2, '0'),
-    status: '판매중',
-    imageUrls: newItem.imageUrls, // 업로드된 이미지 URL 배열 사용
-    liked: false
-  });
-  displayedItems.value = items.value.slice(0, 4); // 첫 4개 아이템만 반환
-  toggleModal(); // 아이템을 추가한 후 모달 닫기
-};
-
-const fetchItems = async () => {
-  try {
-    const response = await axios.get('/api/apt-deal/by-realtor', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}` // 인증 헤더 추가
-      }
-    });
-    items.value = response.data;
-    displayedItems.value = items.value.slice(0, 4); // 첫 4개 아이템만 반환
-  } catch (error) {
-    console.error("There was an error fetching the items!", error);
-  }
-};
-
-onMounted(() => {
-  fetchItems();
-});
-</script>
-
 <template>
   <div class="my-items">
     <div class="header">
-      <h2>내 매물 <button class="add-button" @click="toggleModal">+</button></h2>
-      <!-- router-link를 사용하여 전체 보기로 네비게이션 -->
+      <h2>내 매물 
+        <button class="add-button" @click="toggleModal">+</button>
+      </h2>
       <router-link :to="{ name: 'allItem', params: { items: encodeURIComponent(JSON.stringify(items)) } }">
         <button class="view-all-button">전체 보기</button>
       </router-link>
     </div>
     <div class="items-container">
       <div v-for="(item, index) in displayedItems" :key="item.aptDealId" class="item-card">
-        <!-- 대표 사진만 보여줌 -->
         <img v-if="item.imageUrls && item.imageUrls.length" :src="item.imageUrls[0]" alt="item image" class="item-image" />
         <div class="item-details">
           <div class="item-tags">
@@ -96,6 +28,73 @@ onMounted(() => {
     <RegistItemModal v-if="showModal" @submit="addItem" @close="toggleModal" />
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from '../axios';
+import RegistItemModal from '@/components/Modal/RegistItemModal.vue';
+
+const items = ref([]);
+const showModal = ref(false);
+const displayedItems = ref([]);
+const router = useRouter();
+
+const toggleModal = () => {
+  showModal.value = !showModal.value;
+};
+
+const deleteItem = async (itemId) => {
+  try {
+    await axios.delete(`/api/apt-deal/${itemId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    items.value = items.value.filter(item => item.aptDealId !== itemId);
+    displayedItems.value = items.value.slice(0, 4);
+  } catch (error) {
+    console.error("There was an error deleting the item!", error);
+  }
+};
+
+const viewDetails = (itemId) => {
+  router.push(`/item-details/${itemId}`);
+};
+
+const addItem = async (newItem) => {
+  try {
+    const response = await axios.post('/api/apt-deal', newItem, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    items.value.push(response.data);
+    displayedItems.value = items.value.slice(0, 4);
+    toggleModal();
+  } catch (error) {
+    console.error("There was an error adding the item!", error);
+  }
+};
+
+const fetchItems = async () => {
+  try {
+    const response = await axios.get('/api/apt-deal/by-realtor', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    items.value = response.data;
+    displayedItems.value = items.value.slice(0, 4);
+  } catch (error) {
+    console.error("There was an error fetching the items!", error);
+  }
+};
+
+onMounted(() => {
+  fetchItems();
+});
+</script>
 
 <style scoped>
 .my-items {

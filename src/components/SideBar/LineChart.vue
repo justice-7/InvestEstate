@@ -4,10 +4,10 @@
 
 <script setup>
 import { defineProps, onMounted, ref, watch } from 'vue';
-import { Line } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, Filler, LineController, TimeScale } from 'chart.js';
+import 'chartjs-adapter-date-fns';
 
-ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement);
+ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement, Filler, LineController, TimeScale);
 
 const props = defineProps({
   chartData: {
@@ -49,7 +49,7 @@ watch(() => props.chartOptions, (newOptions) => {
 
 <style scoped>
 canvas {
-  width: 100%;
+  width: 400px;
   height: 100%;
 }
 </style>
