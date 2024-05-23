@@ -1,17 +1,22 @@
 <script setup>
-defineProps({
-  item: Object
+const props = defineProps({
+  item: {
+    type: Object,
+    required: true
+  }
 });
+
+const emit = defineEmits(['remove']);
 </script>
 
 <template>
   <div class="favorite-item">
     <div class="item-image">
-      <img v-if="item && item.aptInfo && item.aptInfo.imageUrls && item.aptInfo.imageUrls.length > 0" :src="item.aptInfo.imageUrls[0]" alt="item image"/>
+      <img v-if="item?.aptInfo?.imageUrls?.length" :src="item.aptInfo.imageUrls[0]" alt="item image"/>
     </div>
     <div class="item-details">
-      <h3 v-if="item && item.aptInfo">{{ item.aptInfo.name }}</h3>
-      <div class="item-footer" v-if="item && item.aptInfo">
+      <h3>{{ item?.aptInfo?.name }}</h3>
+      <div class="item-footer">
         <button class="remove-button" @click="$emit('remove', item.aptId)">삭제</button>
         <button class="view-button">상세보기</button>
       </div>
@@ -21,18 +26,25 @@ defineProps({
 
 <style scoped>
 .favorite-item {
-  width: 200px;
+  width: 250px;
   border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 15px;
+  border-radius: 15px;
+  padding: 20px;
   background-color: #fff;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.favorite-item:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .item-image img {
   width: 100%;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  object-fit: cover;
 }
 
 .item-details {
@@ -46,24 +58,35 @@ defineProps({
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .remove-button {
   background: none;
   border: none;
-  color: red;
+  color: #ff4d4f;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.remove-button:hover {
+  color: #d9363e;
 }
 
 .view-button {
-  padding: 5px 10px;
+  padding: 8px 12px;
   border: 1px solid #00bcd4;
   background-color: #fff;
   color: #00bcd4;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.view-button:hover {
+  background-color: #00bcd4;
+  color: #fff;
 }
 </style>

@@ -4,6 +4,7 @@ import UsrMyPage from '@/views/UsrMypageView.vue';
 import ReaMyPage from '@/views/ReaMypageView.vue';
 import AllItemView from '@/views/AllItemView.vue';
 import AddressSearchPopup from '@/views/AddrPopup.vue'; // Ensure this path is correct
+import DetailSidebar from '@/components/SideBar/DetailSidebar.vue'; // DetailSidebar 컴포넌트 import
 
 const routes = [
   {
@@ -31,6 +32,12 @@ const routes = [
     path: '/address-search-popup',
     name: 'addressSearchPopup',
     component: AddressSearchPopup
+  },
+  {
+    path: '/item-details/:aptId',
+    name: 'item-details',
+    component: DetailSidebar,
+    props: true
   }
 ];
 

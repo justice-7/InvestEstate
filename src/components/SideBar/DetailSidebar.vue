@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue';
 import axios from '../../axios';
 import AptDealGraph from './AptDealGraph.vue';
+import Roadview from '../Roadview.vue';
 
 const showFilters = ref(false);
 const selectedArea = ref(null);
@@ -35,7 +36,7 @@ watch(
 watch(
   () => relatedDeals.value,
   (newDeals) => {
-    console.log('Related Deals Updated:', JSON.stringify(newDeals, null, 2));  // relatedDeals 변경 시 콘솔에 출력
+    //console.log('Related Deals Updated:', JSON.stringify(newDeals, null, 2));  // relatedDeals 변경 시 콘솔에 출력
   },
   { deep: true }
 );
@@ -189,10 +190,14 @@ async function createInquiry() {
           {{ isFavorite ? '❤️' : '🤍' }}
         </button>
       </div>
-      <p>가격: {{ selectedDeal.price }}원</p>
-      <p>주소: {{ selectedDeal.jibun }}</p>
-      <p>면적: {{ selectedDeal.area }}</p>
-      <p>층: {{ selectedDeal.floor }}</p>
+      <p>건축년도: {{ selectedDeal.builtYear }}</p>
+      <p>동 이름: {{ selectedDeal.dongName }}</p>
+      <p>지번: {{ selectedDeal.jibun }}</p>
+      <p>이름: {{ selectedDeal.name }}</p>
+
+      <!-- Roadview Component -->
+      <Roadview v-if="selectedDeal.lat && selectedDeal.lng" :lat="selectedDeal.lat" :lng="selectedDeal.lng" />
+
       <div class="inquiry">
         <textarea v-model="inquiryMessage" placeholder="문의 내용을 입력하세요"></textarea>
         <button @click="createInquiry">매물 문의</button>
@@ -223,47 +228,52 @@ async function createInquiry() {
   </div>
 </template>
 
-
 <style scoped>
 .search-container {
-  padding: 10px;
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f7f9fc;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  padding: 5px;
+  padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 20px;
-  margin-bottom: 10px;
+  border-radius: 30px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .search-bar input {
   flex: 1;
   border: none;
   outline: none;
-  padding: 5px 10px;
-  border-radius: 20px;
+  padding: 10px 15px;
+  border-radius: 30px;
+  font-size: 16px;
 }
 
 .search-bar button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
-  padding: 5px 10px;
+  font-size: 20px;
+  margin-left: 10px;
 }
 
 .filter-button {
-  margin-right: 5px;
+  margin-right: 10px;
 }
 
 .filters {
-  margin-top: 10px;
-  padding: 10px;
+  margin-top: 20px;
+  padding: 20px;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .filter-option {
@@ -272,14 +282,15 @@ async function createInquiry() {
 
 .filter-option label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   font-weight: bold;
+  color: #333;
 }
 
 .filter-values {
   display: flex;
   justify-content: space-between;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 .buttons {
@@ -291,15 +302,20 @@ async function createInquiry() {
 .buttons button {
   flex: 1 1 calc(33.333% - 10px);
   padding: 10px;
-  background: #e5e5e5;
-  border: 1px solid #ddd;
+  background: #007bff;
+  color: #fff;
+  border: 1px solid #007bff;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.buttons button:hover {
+  background-color: #0056b3;
 }
 
 .buttons button.active {
-  background-color: #007bff;
-  color: white;
+  background-color: #0056b3;
 }
 
 .filter-actions {
@@ -314,12 +330,16 @@ async function createInquiry() {
   border-radius: 5px;
   cursor: pointer;
   flex: 1;
-  margin: 5px;
+  margin: 10px;
 }
 
 .reset-button {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.reset-button:hover {
+  background-color: #5a6268;
 }
 
 .apply-button {
@@ -327,13 +347,17 @@ async function createInquiry() {
   color: #fff;
 }
 
+.apply-button:hover {
+  background-color: #0056b3;
+}
+
 .search-results {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .search-results h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 22px;
+  margin-bottom: 20px;
 }
 
 .search-results ul {
@@ -341,18 +365,19 @@ async function createInquiry() {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 
 .result-item {
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  border-radius: 10px;
+  background-color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .result-item:hover {
@@ -360,17 +385,18 @@ async function createInquiry() {
 }
 
 .result-name {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
+  color: #333;
 }
 
 .result-price {
-  font-size: 14px;
+  font-size: 16px;
   color: #888;
 }
 
 .selected-deal {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .selected-deal .deal-header {
@@ -383,45 +409,58 @@ async function createInquiry() {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
-  padding: 5px 10px;
-  margin-bottom: 10px;
+  font-size: 18px;
+  padding: 10px 15px;
+  color: #007bff;
+  transition: color 0.3s;
+}
+
+.selected-deal button:hover {
+  color: #0056b3;
 }
 
 .selected-deal h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 .inquiry {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .inquiry textarea {
-  width: 100%;
-  height: 100px;
-  padding: 10px;
+  width: 90%;
+  height: 120px;
+  padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
 }
 
 .inquiry button {
-  padding: 10px;
+  padding: 12px 20px;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.inquiry button:hover {
+  background-color: #0056b3;
 }
 
 .related-deals {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .related-deals h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 22px;
+  margin-bottom: 20px;
 }
 
 .related-deals ul {
@@ -429,31 +468,32 @@ async function createInquiry() {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 
 .related-deals .result-item {
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  border-radius: 10px;
+  background-color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .related-deals .result-name {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
+  color: #333;
 }
 
 .related-deals .result-price {
-  font-size: 14px;
+  font-size: 16px;
   color: #888;
 }
 
 .related-deals .result-date {
-  font-size: 12px;
+  font-size: 14px;
   color: #aaa;
 }
 </style>

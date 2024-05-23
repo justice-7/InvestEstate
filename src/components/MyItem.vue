@@ -20,7 +20,7 @@
           <p>{{ item.description }}</p>
           <div class="item-footer">
             <span class="date">{{ item.year }}-{{ item.month }}-{{ item.day }}</span>
-            <button class="view-button" @click="viewDetails(item.aptDealId)">상세보기</button>
+            <button class="view-button" @click="viewDetails(item)">상세보기</button>
           </div>
         </div>
       </div>
@@ -58,8 +58,8 @@ const deleteItem = async (itemId) => {
   }
 };
 
-const viewDetails = (itemId) => {
-  router.push(`/item-details/${itemId}`);
+const viewDetails = (item) => {
+  router.push({ name: 'item-details', params: { aptId: item.aptDealId, item: JSON.stringify(item) } });
 };
 
 const addItem = async (newItem) => {

@@ -5,9 +5,9 @@ import axios from '../axios'; // axios 인스턴스를 가져옵니다.
 const inquiries = ref([]);
 
 const toggleStatus = async (index) => {
-  inquiries.value[index].status = !inquiries.value[index].status;
+  inquiries.value[index].status = inquiries.value[index].status === 'pending' ? 'completed' : 'pending';
   // 상태 변경을 서버에 반영
-  await axios.put(`/api/inquiries/${inquiries.value[index].id}`, {
+  await axios.put(`/api/inquiries/${inquiries.value[index].inquiryId}`, {
     status: inquiries.value[index].status
   });
 };
@@ -19,6 +19,7 @@ const fetchInquiries = async () => {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }
     });
+    console.log(response.data);
     inquiries.value = response.data;
   } catch (error) {
     console.error("Error fetching inquiries", error);
@@ -37,25 +38,20 @@ onMounted(() => {
       <thead>
         <tr>
           <th>번호</th>
-          <th>매물명</th>
-          <th>정보</th>
-          <th>일시</th>
-          <th>전화</th>
+          <th>매물 ID</th>
+          <th>내용</th>
+          <th>상태</th>
           <th>완료</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(inquiry, index) in inquiries" :key="inquiry.id">
-          <td>{{ inquiry.id }}</td>
-          <td>{{ inquiry.listing }}</td>
+        <tr v-for="(inquiry, index) in inquiries" :key="inquiry.inquiryId">
+          <td>{{ inquiry.inquiryId }}</td>
+          <td>{{ inquiry.aptId }}</td>
+          <td>{{ inquiry.content }}</td>
+          <td>{{ inquiry.status }}</td>
           <td>
-            <div>{{ inquiry.info.name }}</div>
-            <div>{{ inquiry.info.email }}</div>
-          </td>
-          <td>{{ inquiry.date }}</td>
-          <td>{{ inquiry.phone }}</td>
-          <td>
-            <input type="checkbox" :checked="inquiry.status" @change="toggleStatus(index)" />
+            <input type="checkbox" :checked="inquiry.status === 'completed'" @change="toggleStatus(index)" />
           </td>
         </tr>
       </tbody>

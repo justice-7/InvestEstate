@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from '../axios'; // axios 인스턴스를 가져옵니다.
+import axios from '../axios';
 import FavoriteItem from './FavoriteItem.vue';
 
 const favoriteItems = ref([]);
@@ -13,7 +13,6 @@ async function fetchFavoriteItems() {
       }
     });
     favoriteItems.value = response.data;
-    console.log(response.data);
   } catch (error) {
     console.error("There was an error fetching the favorite items!", error);
   }
@@ -55,8 +54,10 @@ onMounted(fetchFavoriteItems);
 }
 
 .favorites-section h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 .favorite-items {

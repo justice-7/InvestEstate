@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from '../axios'; // axios 인스턴스를 가져옵니다.
+import axios from '../axios';
 import UpdateInfoModal from '@/components/Modal/UpdateInfoModal.vue';
 
 const showModal = ref(false);
@@ -9,11 +9,10 @@ const userInfo = ref({ name: '', email: '' });
 function toggleModal() {
   showModal.value = !showModal.value;
   if (!showModal.value) {
-    fetchUserInfo(); // 모달이 닫힐 때 사용자 정보를 다시 가져옴
+    fetchUserInfo();
   }
 }
 
-// 사용자 정보를 가져오는 함수
 async function fetchUserInfo() {
   try {
     const response = await axios.get('/api/users/info', {
@@ -27,31 +26,51 @@ async function fetchUserInfo() {
   }
 }
 
-// 컴포넌트가 마운트될 때 사용자 정보를 가져옴
 onMounted(fetchUserInfo);
 </script>
 
 <template>
-  <div class="update-info">
-    <div class="info">
-      <div class="name">{{ userInfo.name }}</div>
-      <div class="email">{{ userInfo.email }}</div>
+  <div class="user-info-container">
+    <h3>나의 정보</h3>
+    <div class="user-info">
+      <div class="info">
+        <div class="name">{{ userInfo.name }}</div>
+        <div class="email">{{ userInfo.email }}</div>
+      </div>
+      <button class="update-button" @click.prevent="toggleModal">개인정보 수정</button>
     </div>
-    <button class="update-button" @click.prevent="toggleModal">개인정보 수정</button>
     <UpdateInfoModal v-if="showModal" @close="toggleModal" />
   </div>
 </template>
 
 <style scoped>
-.update-info {
+.user-info-container {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.user-info-container:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.user-info {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  padding: 20px;
+  border-radius: 8px;
   background-color: #fff;
-  font-family: Arial, sans-serif;
 }
 
 .info {
@@ -60,23 +79,30 @@ onMounted(fetchUserInfo);
 }
 
 .name {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 600;
   margin-bottom: 5px;
+  color: #007bff;
 }
 
 .email {
-  font-size: 12px;
-  color: #888;
+  font-size: 14px;
+  color: #555;
 }
 
 .update-button {
-  padding: 5px 10px;
+  padding: 10px 20px;
   border: none;
-  background-color: #000;
+  background-color: #007bff;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.update-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
 }
 </style>
