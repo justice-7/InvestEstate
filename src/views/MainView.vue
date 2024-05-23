@@ -4,20 +4,24 @@ import BasicSidebar from '@/components/SideBar/BasicSidebar.vue';
 import Map from '@/components/Map.vue';
 import DetailSidebar from '@/components/SideBar/DetailSidebar.vue';
 
-import MapTest from '@/components/MapTest.vue';
 const searchResults = ref([]); // 검색 결과 상태 관리
+const selectedApt = ref(null); // 선택된 아파트 상태 관리
 
 const handleSearchResults = (results) => {
   searchResults.value = results;
+};
+
+const handleSelectApt = (apt) => {
+  selectedApt.value = apt;
+  console.log(selectedApt.value);
 };
 </script>
 
 <template>
   <div id="app">
     <div class="main-content">
-      <!-- <BasicSidebar /> -->
       <DetailSidebar @search-results="handleSearchResults"/>
-      <Map :aptList="searchResults" />
+      <Map :aptList="searchResults" @select-apt="handleSelectApt" />
       <!-- <MapTest/> -->
     </div>
   </div>

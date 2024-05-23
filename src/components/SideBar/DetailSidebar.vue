@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import axios from '../../axios';
 import AptDealGraph from './AptDealGraph.vue';
 
@@ -12,7 +12,25 @@ const selectedDeal = ref(null);
 const relatedDeals = ref([]);
 const inquiryMessage = ref("");
 const isFavorite = ref(false);
+
 const emit = defineEmits(['search-results']);
+const props = defineProps({
+  selectedApt: {
+    type: Object,
+    default: null,
+  }
+});
+
+watch(
+  () => props.selectedApt,
+  (newApt) => {
+    if (newApt) {
+      console.log('Selected Apt:', newApt);  // selectedApt 변경 시 콘솔에 출력
+      selectDeal(newApt);
+    }
+  },
+  { immediate: true }
+);
 
 function toggleFilters() {
   showFilters.value = !showFilters.value;
@@ -50,7 +68,6 @@ async function searchAptDeals() {
     });
     searchResults.value = response.data;
     console.log("조회 데이터", response.data);
-    
     emit('search-results', response.data); // 이벤트 발생
   } catch (error) {
     console.error("There was an error searching the apartment deals!", error);
@@ -194,6 +211,14 @@ async function createInquiry() {
           <span class="result-price">{{ deal.price }}원</span>
         </li>
       </ul>
+    </div>
+
+    <div v-if="props.selectedApt">
+      <h3>선택된 아파트</h3>
+      <div>이름: {{ props.selectedApt.name }}</div>
+      <div>가격: {{ props.selectedApt.price }}원</div>
+      <div>면적: {{ props.selectedApt.area }}</div>
+      <div>주소: {{ props.selectedApt.jibun }}</div>
     </div>
   </div>
 </template>

@@ -1,17 +1,93 @@
 <script setup>
-import { KakaoMap } from 'vue3-kakao-maps';
+import { ref, watch } from 'vue';
+import { KakaoMap, KakaoMapMarker } from 'vue3-kakao-maps';
+
+const map = ref();
+const markerList = ref([]);
 
 // props 정의
 const props = defineProps({
   aptList: {
     type: Array,
-    required: true
+    default: () => [],
   }
 });
+
+const emit = defineEmits(['select-apt']);
+
+const onLoadKakaoMap = async (mapRef) => {
+  map.value = mapRef;
+};
+
+
+watch(
+  () => props.aptList,
+  (newList) => {
+    
+    markerList.value = newList.map((apt) => ({
+      
+      key: apt.aptId,
+      lat: apt.lat,
+      lng: apt.lng,
+      name:apt.name,
+      visible: false,
+
+      area: apt.exclusiveArea,
+      price: apt.dealAmount,
+
+    }));
+
+    if (markerList.value.length > 0) {
+      const bounds = new window.kakao.maps.LatLngBounds();
+
+      markerList.value.forEach((marker) => {
+        bounds.extend(new window.kakao.maps.LatLng(marker.lat, marker.lng));
+      });
+
+      map.value.setBounds(bounds);
+    }
+  }
+);
+
+
+// 클릭한 마커 정보 부모에게 전달
+const aptInfo = (apt) => {
+  emit('select-apt', apt);
+};
+
+const mouseOverKakaoMapMarker = (markerItem) => {
+  markerItem.visible = true;
+};
+
+const mouseOutKakaoMapMarker = (markerItem) => {
+  markerItem.visible = false;
+};
 
 </script>
 
 <template>
-  <!-- <KakaoMap :lat="36.34" :lng="127.77" :level="14" :markerCluster="{ markers: "props.aptList" }" /> -->
-  <KakaoMap :lat="33.450701" :lng="126.570667" :markerList="props.aptList" width=100% height="100%" />
+  <KakaoMap
+    :lat="33.450705"
+    :lng="126.570667" 
+    :draggable="true"
+    @onLoadKakaoMap="onLoadKakaoMap"
+    style="width: 100%; height: 100%"
+    >
+      <KakaoMapMarker
+        v-for="(marker, index) in markerList"
+        :key="index"
+        :lat="marker.lat"
+        :lng="marker.lng"
+        :infoWindow="{ content: marker.name, visible: marker.visible }"
+        :clickable="true"
+
+        @mouseOverKakaoMapMarker="mouseOverKakaoMapMarker(marker)"
+        @mouseOutKakaoMapMarker="mouseOutKakaoMapMarker(marker)"
+        @onClickKakaoMapMarker="aptInfo(marker)"
+      />
+  </KakaoMap>
 </template>
+
+<style scoped>
+/* 스타일 코드 */
+</style>
