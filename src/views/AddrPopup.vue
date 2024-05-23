@@ -10,10 +10,10 @@
       <ul>
         <li v-for="(result, index) in searchResults" :key="index" @click="selectAddress(result)">
           <div class="result-item">
-            <span class="postal-code">{{ result.postalCode }}</span>
+            <span class="postal-code">({{ result.jibun }}) </span>
             <div class="address-info">
-              <p class="address">{{ result.address }}</p>
-              <p class="extra-info">{{ result.extraInfo }}</p>
+              <p class="address"> {{ result.name }}</p>
+              <p class="extra-info">{{ result.sidoName }} {{ result.gugunName }} {{ result.dongName }}</p>
             </div>
             <div class="view-links">
               <a href="#" @click.stop>영문보기</a>
@@ -28,23 +28,30 @@
 
 <script setup>
 import { ref } from 'vue';
+import axios from '../axios';
 
 const searchQuery = ref('');
 const searchResults = ref([]);
 
-const performSearch = () => {
-  // Mock search results
-  searchResults.value = [
-    { postalCode: '06035', address: '서울 강남구 가로수길 5', extraInfo: '서울 강남구 신사동 537-5' },
-    { postalCode: '06035', address: '서울 강남구 가로수길 9', extraInfo: '서울 강남구 신사동 536-9' },
-    { postalCode: '06035', address: '서울 강남구 가로수길 11', extraInfo: '서울 강남구 신사동 535-7' }
-  ];
+const performSearch = async () => {
+  try {
+    const response = await axios.get('/api/address/search', {
+      params: { query: searchQuery.value },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    });
+    searchResults.value = response.data;
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error fetching search results:', error);
+  }
 };
 
 const selectAddress = (result) => {
-  searchQuery.value = `${result.address} (${result.extraInfo})`;
-  // Pass the selected address back to the opener window
-  window.opener.postMessage({ address: searchQuery.value }, '*');
+  console.log(result);
+  const fullAddress = `${result.sidoName} ${result.gugunName} ${result.dongName} (${result.jibun}) ${result.name}`;
+  window.opener.postMessage({ aptId: result.aptId, address: fullAddress }, '*');
   window.close();
 };
 </script>
@@ -103,12 +110,6 @@ const selectAddress = (result) => {
 
 .result-item:hover {
   background-color: #f0f0f0;
-}
-
-.postal-code {
-  font-weight: bold;
-  color: #666;
-  margin-right: 10px;
 }
 
 .address-info {

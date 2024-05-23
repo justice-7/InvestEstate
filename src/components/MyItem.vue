@@ -13,7 +13,7 @@
         <img v-if="item.imageUrls && item.imageUrls.length" :src="item.imageUrls[0]" alt="item image" class="item-image" />
         <div class="item-details">
           <div class="item-tags">
-            <span class="tag">{{ item.status }}</span>
+            <span class="tag">{{ item.dongName }}</span>
             <button class="delete-button" @click="deleteItem(item.aptDealId)">삭제</button>
           </div>
           <h3>{{ item.name }}</h3>
@@ -85,6 +85,7 @@ const fetchItems = async () => {
       }
     });
     items.value = response.data;
+    console.log(response.data);
     displayedItems.value = items.value.slice(0, 4);
   } catch (error) {
     console.error("There was an error fetching the items!", error);

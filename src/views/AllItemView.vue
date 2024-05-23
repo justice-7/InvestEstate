@@ -43,11 +43,11 @@ const deleteItem = async (itemId, index) => {
         <img v-if="item.imageUrls && item.imageUrls.length" :src="item.imageUrls[0]" alt="item image" class="item-image" />
         <div class="item-details">
           <div class="item-tags">
-            <span class="tag">{{ item.status }}</span>
+            <span class="tag">{{ item.dongName }}</span>
             <button class="delete-button" @click="deleteItem(item.aptDealId, index)">삭제</button>
           </div>
           <h3>{{ item.name }}</h3>
-          <p>{{ item.description }}</p>
+          <p>{{ item.content }}</p> <!-- description 대신 content로 변경 -->
           <div class="item-footer">
             <span class="date">{{ item.year }}-{{ item.month }}-{{ item.day }}</span>
             <button class="view-button">상세보기</button>
