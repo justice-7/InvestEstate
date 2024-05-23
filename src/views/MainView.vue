@@ -12,17 +12,16 @@ const handleSearchResults = (results) => {
 };
 
 const handleSelectApt = (apt) => {
+  console.log('Apt selected in MainView:', apt); // 선택된 아파트 로그 출력
   selectedApt.value = apt;
-  console.log(selectedApt.value);
 };
 </script>
 
 <template>
   <div id="app">
     <div class="main-content">
-      <DetailSidebar @search-results="handleSearchResults"/>
+      <DetailSidebar @search-results="handleSearchResults" :selectedApt="selectedApt" />
       <Map :aptList="searchResults" @select-apt="handleSelectApt" />
-      <!-- <MapTest/> -->
     </div>
   </div>
 </template>

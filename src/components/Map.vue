@@ -25,16 +25,15 @@ watch(
   (newList) => {
     
     markerList.value = newList.map((apt) => ({
-      
-      key: apt.aptId,
+      aptId: apt.aptId,
+      name:apt.name,
       lat: apt.lat,
       lng: apt.lng,
-      name:apt.name,
       visible: false,
-
-      area: apt.exclusiveArea,
-      price: apt.dealAmount,
-
+      buildYear: apt.buildYear,
+      dongCode: apt.dongCode,
+      dongName: apt.dongName,
+      jibun: apt.jibun,
     }));
 
     if (markerList.value.length > 0) {

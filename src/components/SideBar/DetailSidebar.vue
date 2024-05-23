@@ -25,11 +25,19 @@ watch(
   () => props.selectedApt,
   (newApt) => {
     if (newApt) {
-      console.log('Selected Apt:', newApt);  // selectedApt 변경 시 콘솔에 출력
+      console.log('Selected Apt:', JSON.stringify(newApt, null, 2));  // selectedApt 변경 시 콘솔에 JSON 형식으로 출력
       selectDeal(newApt);
     }
   },
   { immediate: true }
+);
+
+watch(
+  () => relatedDeals.value,
+  (newDeals) => {
+    console.log('Related Deals Updated:', JSON.stringify(newDeals, null, 2));  // relatedDeals 변경 시 콘솔에 출력
+  },
+  { deep: true }
 );
 
 function toggleFilters() {
@@ -82,7 +90,7 @@ async function fetchRelatedDeals(aptId) {
       }
     });
     relatedDeals.value = response.data;
-    console.log(response.data);
+    console.log("aptDealData", response.data);
   } catch (error) {
     console.error("There was an error fetching related deals!", error);
   }
@@ -141,7 +149,6 @@ async function checkIfFavorite(aptId) {
   }
 }
 
-
 async function createInquiry() {
   try {
     const inquiryRequest = {
@@ -193,7 +200,7 @@ async function createInquiry() {
 
       <div v-if="relatedDeals.length" class="related-deals">
         <h3>관련 매물 목록</h3>
-        <AptDealGraph :deals="relatedDeals" />
+        <AptDealGraph :deals="relatedDeals" :key="relatedDeals.length" />
         <ul>
           <li v-for="deal in relatedDeals" :key="deal.aptDealId" class="result-item">
             <span class="result-name">{{ deal.name }}</span>
@@ -212,14 +219,6 @@ async function createInquiry() {
           <span class="result-price">{{ deal.price }}원</span>
         </li>
       </ul>
-    </div>
-
-    <div v-if="props.selectedApt">
-      <h3>선택된 아파트</h3>
-      <div>이름: {{ props.selectedApt.name }}</div>
-      <div>가격: {{ props.selectedApt.price }}원</div>
-      <div>면적: {{ props.selectedApt.area }}</div>
-      <div>주소: {{ props.selectedApt.jibun }}</div>
     </div>
   </div>
 </template>
